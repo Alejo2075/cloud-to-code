@@ -1,4 +1,5 @@
 import type { Answer, ReconstructionQuestion } from '@cloud-to-code/core';
+import type { SenderFactory } from '@cloud-to-code/provider-aws';
 
 /** Terminal prompts. Implemented with @clack/prompts in the real binary and scripted in tests. */
 export interface Prompter {
@@ -18,4 +19,6 @@ export interface CliIo {
   /** True only when stdin and stdout are both terminals. */
   interactive: boolean;
   prompter?: Prompter;
+  /** Test seam: replaces the real AWS clients. Never set in the shipped binary. */
+  awsSenderFor?: SenderFactory;
 }

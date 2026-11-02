@@ -1,6 +1,8 @@
 import { Command, CommanderError } from 'commander';
 import { createContext, type GlobalOptions } from './context.js';
+import { runConfigShow, runInit } from './commands/config.js';
 import { runDemo } from './commands/demo.js';
+import { runDiscover } from './commands/discover.js';
 import { runAdoptionPlan, runGenerate, runValidate } from './commands/generate.js';
 import { runInspect } from './commands/inspect.js';
 import {
@@ -49,6 +51,41 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
     .description('Inspect the bundled synthetic example (no AWS, no AI, no network)')
     .action(() => {
       exitCode = runDemo(ctx());
+    });
+
+  program
+    .command('init')
+    .description('Save non-secret AWS defaults and privacy preferences (no credentials are stored)')
+    .option('--profile <name>', 'AWS profile (SSO or shared config)')
+    .option('--role-arn <arn>', 'role to assume for discovery')
+    .option('--regions <list>', 'default regions, comma separated')
+    .option('--external-model-context <mode>', 'ask-first (default) or never')
+    .action((options) => {
+      exitCode = runInit(ctx(), options);
+    });
+
+  program
+    .command('config')
+    .description('Show settings (never credentials)')
+    .command('show')
+    .action(() => {
+      exitCode = runConfigShow(ctx());
+    });
+
+  program
+    .command('discover')
+    .description(
+      'Read-only discovery of an explicit account, regions and services into a sanitized snapshot',
+    )
+    .option('--account <id>', 'AWS account ID you are allowed to read (must match the credentials)')
+    .option('--regions <list>', 'regions, comma separated (no implicit all-regions scan)')
+    .option('--services <list>', 'services, comma separated (default: every supported service)')
+    .option('--profile <name>', 'AWS profile')
+    .option('--role-arn <arn>', 'role to assume')
+    .option('--output <file>', 'snapshot file to write (default c2c-snapshot.json)')
+    .option('--overwrite', 'replace an existing snapshot file')
+    .action(async (options) => {
+      exitCode = await runDiscover(ctx(), options);
     });
 
   program
