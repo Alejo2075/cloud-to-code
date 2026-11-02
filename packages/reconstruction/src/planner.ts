@@ -32,7 +32,7 @@ export interface PlanInput {
   applicationId?: string | undefined;
 }
 
-const GROUP_ORDER = ['references', 'data', 'messaging', 'compute', 'api'] as const;
+const GROUP_ORDER = ['references', 'data', 'messaging', 'compute', 'api', 'events'] as const;
 type PlanGroup = (typeof GROUP_ORDER)[number];
 
 export function applicationIdFor(name: string): string {
@@ -141,6 +141,17 @@ export function buildPlan(input: PlanInput): ReconstructionPlan {
       });
       continue;
     }
+    if (r.type === 'AWS::Lambda::Function' && r.observedProperties['packageType'] === 'Image') {
+      excluded.add(id);
+      unresolved.push({
+        resourceId: id,
+        property: 'packageType',
+        reason:
+          'Container-image Lambda functions are not supported by the generator yet; the function is excluded and must be handled manually.',
+        requiredFor: 'generation',
+      });
+      continue;
+    }
     if (STATEFUL_TYPES.has(r.type) && statefulChoice === 'reference-existing') referenced.add(id);
     else owned.add(id);
   }
@@ -171,6 +182,16 @@ export function buildPlan(input: PlanInput): ReconstructionPlan {
         'Deployed code packages are never downloaded and cannot reconstruct your repository. Code is taken from deploy-time CloudFormation parameters.',
       requiredFor: 'generation',
     });
+    for (const unsupported of ['vpcConfig', 'fileSystemConfigs', 'deadLetterConfig', 'kmsKeyArn']) {
+      if (r.observedProperties[unsupported] !== undefined) {
+        unresolved.push({
+          resourceId: id,
+          property: unsupported,
+          reason: `${unsupported} is observed but not mapped by the generator yet; configure it manually.`,
+          requiredFor: 'generation',
+        });
+      }
+    }
     const names = (r.observedProperties['environmentVariableNames'] as string[] | undefined) ?? [];
     if (names.length > 0) {
       unresolved.push({

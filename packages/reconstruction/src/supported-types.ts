@@ -20,7 +20,7 @@ export const STATEFUL_TYPES: ReadonlySet<string> = new Set([
   'AWS::S3::Bucket',
 ]);
 
-export type ConstructGroup = 'api' | 'compute' | 'data' | 'messaging';
+export type ConstructGroup = 'api' | 'compute' | 'data' | 'messaging' | 'events';
 
 export const GROUP_BY_TYPE: Readonly<Record<string, ConstructGroup>> = {
   'AWS::ApiGatewayV2::Api': 'api',
@@ -30,5 +30,5 @@ export const GROUP_BY_TYPE: Readonly<Record<string, ConstructGroup>> = {
   'AWS::S3::Bucket': 'data',
   'AWS::SQS::Queue': 'messaging',
   'AWS::Events::EventBus': 'messaging',
-  'AWS::Events::Rule': 'messaging',
+  'AWS::Events::Rule': 'events',
 };

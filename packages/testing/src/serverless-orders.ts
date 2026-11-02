@@ -10,6 +10,7 @@ const arn = {
   queue: (n: string) => `arn:aws:sqs:${R}:${A}:${n}`,
   role: (n: string) => `arn:aws:iam::${A}:role/${n}`,
   bus: (n: string) => `arn:aws:events:${R}:${A}:event-bus/${n}`,
+  bucket: (n: string) => `arn:aws:s3:::${n}`,
   rule: (bus: string, n: string) => `arn:aws:events:${R}:${A}:rule/${bus}/${n}`,
 };
 
@@ -25,6 +26,7 @@ function lambdaProps(opts: {
   timeout: number;
   role: string;
   envNames: string[];
+  eventSourceMappings?: Record<string, unknown>[];
 }): Record<string, unknown> {
   return {
     runtime: 'nodejs22.x',
@@ -40,6 +42,7 @@ function lambdaProps(opts: {
     // Names only: environment *values* are never collected.
     environmentVariableNames: opts.envNames,
     layers: [],
+    eventSourceMappings: opts.eventSourceMappings ?? [],
   };
 }
 
@@ -141,6 +144,14 @@ export function buildServerlessOrdersSnapshot(): CloudSnapshot {
       timeout: 30,
       role: 'orders-stream-role',
       envNames: [],
+      eventSourceMappings: [
+        {
+          eventSourceArn: `${arn.table('orders-table')}/stream/2026-01-01T00:00:00.000`,
+          batchSize: 100,
+          startingPosition: 'LATEST',
+          enabled: true,
+        },
+      ],
     }),
   });
   const worker = b.add({
@@ -156,6 +167,9 @@ export function buildServerlessOrdersSnapshot(): CloudSnapshot {
       timeout: 60,
       role: 'orders-worker-role',
       envNames: ['QUEUE_URL'],
+      eventSourceMappings: [
+        { eventSourceArn: arn.queue('orders-queue'), batchSize: 10, enabled: true },
+      ],
     }),
   });
   const billing = b.add({
@@ -240,6 +254,35 @@ export function buildServerlessOrdersSnapshot(): CloudSnapshot {
       maximumMessageSize: 262144,
       receiveMessageWaitTimeSeconds: 0,
       sqsManagedSseEnabled: true,
+    },
+  });
+
+  const exportsBucket = b.add({
+    type: 'AWS::S3::Bucket',
+    physicalId: 'orders-exports',
+    arn: arn.bucket('orders-exports'),
+    global: true,
+    operation: 's3:GetBucketVersioning',
+    tags: ORDERS_TAGS,
+    properties: {
+      bucketName: 'orders-exports',
+      versioning: 'Enabled',
+      encryption: { sseAlgorithm: 'AES256' },
+      publicAccessBlock: {
+        blockPublicAcls: true,
+        ignorePublicAcls: true,
+        blockPublicPolicy: true,
+        restrictPublicBuckets: true,
+      },
+      notifications: [
+        {
+          id: 'export-created',
+          events: ['s3:ObjectCreated:*'],
+          prefix: 'exports/',
+          suffix: '.csv',
+          lambdaArn: arn.fn('orders-worker'),
+        },
+      ],
     },
   });
 
@@ -340,6 +383,11 @@ export function buildServerlessOrdersSnapshot(): CloudSnapshot {
             Action: ['sqs:ReceiveMessage', 'sqs:DeleteMessage', 'sqs:GetQueueAttributes'],
             Resource: arn.queue('orders-queue'),
           },
+          {
+            Effect: 'Allow',
+            Action: ['s3:GetObject'],
+            Resource: `${arn.bucket('orders-exports')}/exports/*`,
+          },
         ],
       },
     ]),
@@ -358,6 +406,7 @@ export function buildServerlessOrdersSnapshot(): CloudSnapshot {
   b.relate(table, streamProcessor, 'triggers', 'confirmed', 'lambda:ListEventSourceMappings');
   b.relate(queue, worker, 'triggers', 'confirmed', 'lambda:ListEventSourceMappings');
   b.relate(queue, dlq, 'dead-letters-to', 'confirmed', 'sqs:GetQueueAttributes.RedrivePolicy');
+  b.relate(exportsBucket, worker, 'notifies', 'confirmed', 's3:GetBucketNotificationConfiguration');
   b.relate(ordersRule, bus, 'rule-on-bus', 'confirmed', 'events:ListRules');
   b.relate(billingRule, bus, 'rule-on-bus', 'confirmed', 'events:ListRules');
   b.relate(ordersRule, worker, 'targets', 'confirmed', 'events:ListTargetsByRule');

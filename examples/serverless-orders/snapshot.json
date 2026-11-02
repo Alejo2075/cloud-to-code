@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "id": "snap-f4956ddac7671459",
+  "id": "snap-b993fa33cdb3f726",
   "collectedAt": "2026-01-15T12:00:00Z",
   "scope": {
     "accountIds": [
@@ -15,6 +15,7 @@
       "events",
       "iam",
       "lambda",
+      "s3",
       "sqs"
     ]
   },
@@ -49,7 +50,7 @@
       },
       "tags": {},
       "evidenceIds": [
-        "ev-15"
+        "ev-16"
       ],
       "diagnostics": []
     },
@@ -104,7 +105,7 @@
       },
       "tags": {},
       "evidenceIds": [
-        "ev-12"
+        "ev-13"
       ],
       "diagnostics": []
     },
@@ -157,7 +158,7 @@
       },
       "tags": {},
       "evidenceIds": [
-        "ev-13"
+        "ev-14"
       ],
       "diagnostics": []
     },
@@ -200,6 +201,13 @@
                     "sqs:GetQueueAttributes"
                   ],
                   "Resource": "arn:aws:sqs:us-east-1:123456789012:orders-queue"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": "arn:aws:s3:::orders-exports/exports/*"
                 }
               ]
             }
@@ -209,7 +217,48 @@
       },
       "tags": {},
       "evidenceIds": [
-        "ev-14"
+        "ev-15"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "123456789012/global/AWS::S3::Bucket/orders-exports",
+      "type": "AWS::S3::Bucket",
+      "accountId": "123456789012",
+      "region": "global",
+      "physicalId": "orders-exports",
+      "arn": "arn:aws:s3:::orders-exports",
+      "displayName": "orders-exports",
+      "observedProperties": {
+        "bucketName": "orders-exports",
+        "versioning": "Enabled",
+        "encryption": {
+          "sseAlgorithm": "AES256"
+        },
+        "publicAccessBlock": {
+          "blockPublicAcls": true,
+          "ignorePublicAcls": true,
+          "blockPublicPolicy": true,
+          "restrictPublicBuckets": true
+        },
+        "notifications": [
+          {
+            "id": "export-created",
+            "events": [
+              "s3:ObjectCreated:*"
+            ],
+            "prefix": "exports/",
+            "suffix": ".csv",
+            "lambdaArn": "arn:aws:lambda:us-east-1:123456789012:function:orders-worker"
+          }
+        ]
+      },
+      "tags": {
+        "aws:cloudformation:stack-name": "orders-stack",
+        "Team": "commerce"
+      },
+      "evidenceIds": [
+        "ev-9"
       ],
       "diagnostics": []
     },
@@ -359,7 +408,7 @@
         "aws:cloudformation:stack-name": "shared-infra"
       },
       "evidenceIds": [
-        "ev-9"
+        "ev-10"
       ],
       "diagnostics": []
     },
@@ -395,7 +444,7 @@
         "Team": "finance"
       },
       "evidenceIds": [
-        "ev-11"
+        "ev-12"
       ],
       "diagnostics": []
     },
@@ -431,7 +480,7 @@
         "Team": "commerce"
       },
       "evidenceIds": [
-        "ev-10"
+        "ev-11"
       ],
       "diagnostics": []
     },
@@ -457,7 +506,8 @@
         "tracingMode": "PassThrough",
         "ephemeralStorageSize": 512,
         "environmentVariableNames": [],
-        "layers": []
+        "layers": [],
+        "eventSourceMappings": []
       },
       "tags": {
         "aws:cloudformation:stack-name": "billing-stack",
@@ -492,7 +542,8 @@
         "environmentVariableNames": [
           "TABLE_NAME"
         ],
-        "layers": []
+        "layers": [],
+        "eventSourceMappings": []
       },
       "tags": {
         "aws:cloudformation:stack-name": "orders-stack",
@@ -525,7 +576,15 @@
         "tracingMode": "PassThrough",
         "ephemeralStorageSize": 512,
         "environmentVariableNames": [],
-        "layers": []
+        "layers": [],
+        "eventSourceMappings": [
+          {
+            "eventSourceArn": "arn:aws:dynamodb:us-east-1:123456789012:table/orders-table/stream/2026-01-01T00:00:00.000",
+            "batchSize": 100,
+            "startingPosition": "LATEST",
+            "enabled": true
+          }
+        ]
       },
       "tags": {
         "aws:cloudformation:stack-name": "orders-stack",
@@ -560,7 +619,14 @@
         "environmentVariableNames": [
           "QUEUE_URL"
         ],
-        "layers": []
+        "layers": [],
+        "eventSourceMappings": [
+          {
+            "eventSourceArn": "arn:aws:sqs:us-east-1:123456789012:orders-queue",
+            "batchSize": 10,
+            "enabled": true
+          }
+        ]
       },
       "tags": {
         "aws:cloudformation:stack-name": "orders-stack",
@@ -637,21 +703,12 @@
       "kind": "routes-to",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-16"
+        "ev-17"
       ]
     },
     {
       "from": "123456789012/us-east-1/AWS::DynamoDB::Table/orders-table",
       "to": "123456789012/us-east-1/AWS::Lambda::Function/orders-stream-processor",
-      "kind": "triggers",
-      "confidence": "confirmed",
-      "evidenceIds": [
-        "ev-17"
-      ]
-    },
-    {
-      "from": "123456789012/us-east-1/AWS::SQS::Queue/orders-queue",
-      "to": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
       "kind": "triggers",
       "confidence": "confirmed",
       "evidenceIds": [
@@ -660,11 +717,29 @@
     },
     {
       "from": "123456789012/us-east-1/AWS::SQS::Queue/orders-queue",
+      "to": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "kind": "triggers",
+      "confidence": "confirmed",
+      "evidenceIds": [
+        "ev-19"
+      ]
+    },
+    {
+      "from": "123456789012/us-east-1/AWS::SQS::Queue/orders-queue",
       "to": "123456789012/us-east-1/AWS::SQS::Queue/orders-dlq",
       "kind": "dead-letters-to",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-19"
+        "ev-20"
+      ]
+    },
+    {
+      "from": "123456789012/global/AWS::S3::Bucket/orders-exports",
+      "to": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "kind": "notifies",
+      "confidence": "confirmed",
+      "evidenceIds": [
+        "ev-21"
       ]
     },
     {
@@ -673,7 +748,7 @@
       "kind": "rule-on-bus",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-20"
+        "ev-22"
       ]
     },
     {
@@ -682,7 +757,7 @@
       "kind": "rule-on-bus",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-21"
+        "ev-23"
       ]
     },
     {
@@ -691,7 +766,7 @@
       "kind": "targets",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-22"
+        "ev-24"
       ]
     },
     {
@@ -700,7 +775,7 @@
       "kind": "targets",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-23"
+        "ev-25"
       ]
     },
     {
@@ -709,7 +784,7 @@
       "kind": "assumes-role",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-24"
+        "ev-26"
       ]
     },
     {
@@ -718,7 +793,7 @@
       "kind": "assumes-role",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-25"
+        "ev-27"
       ]
     },
     {
@@ -727,7 +802,7 @@
       "kind": "assumes-role",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-26"
+        "ev-28"
       ]
     },
     {
@@ -736,7 +811,7 @@
       "kind": "assumes-role",
       "confidence": "confirmed",
       "evidenceIds": [
-        "ev-27"
+        "ev-29"
       ]
     },
     {
@@ -745,7 +820,7 @@
       "kind": "possible-access",
       "confidence": "hypothesis",
       "evidenceIds": [
-        "ev-28"
+        "ev-30"
       ]
     },
     {
@@ -754,7 +829,7 @@
       "kind": "possible-access",
       "confidence": "hypothesis",
       "evidenceIds": [
-        "ev-29"
+        "ev-31"
       ]
     },
     {
@@ -763,7 +838,16 @@
       "kind": "possible-access",
       "confidence": "hypothesis",
       "evidenceIds": [
-        "ev-30"
+        "ev-32"
+      ]
+    },
+    {
+      "from": "123456789012/global/AWS::S3::Bucket/orders-exports",
+      "to": "123456789012/us-east-1/AWS::ApiGatewayV2::Api/a1b2c3d4e5",
+      "kind": "same-stack",
+      "confidence": "derived",
+      "evidenceIds": [
+        "ev-33"
       ]
     },
     {
@@ -772,7 +856,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-31"
+        "ev-34"
       ]
     },
     {
@@ -781,7 +865,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-32"
+        "ev-35"
       ]
     },
     {
@@ -790,7 +874,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-33"
+        "ev-36"
       ]
     },
     {
@@ -799,7 +883,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-34"
+        "ev-37"
       ]
     },
     {
@@ -808,7 +892,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-35"
+        "ev-38"
       ]
     },
     {
@@ -817,7 +901,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-36"
+        "ev-39"
       ]
     },
     {
@@ -826,7 +910,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-37"
+        "ev-40"
       ]
     },
     {
@@ -835,7 +919,7 @@
       "kind": "same-stack",
       "confidence": "derived",
       "evidenceIds": [
-        "ev-38"
+        "ev-41"
       ]
     }
   ],
@@ -899,208 +983,229 @@
     {
       "id": "ev-9",
       "kind": "aws-observed",
-      "source": "events:DescribeEventBus",
+      "source": "s3:GetBucketVersioning",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "shared-events"
+      "detail": "orders-exports"
     },
     {
       "id": "ev-10",
       "kind": "aws-observed",
-      "source": "events:DescribeRule",
+      "source": "events:DescribeEventBus",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "shared-events/orders-created"
+      "detail": "shared-events"
     },
     {
       "id": "ev-11",
       "kind": "aws-observed",
       "source": "events:DescribeRule",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "shared-events/billing-invoice"
+      "detail": "shared-events/orders-created"
     },
     {
       "id": "ev-12",
       "kind": "aws-observed",
-      "source": "iam:GetRole",
+      "source": "events:DescribeRule",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-handler-role"
+      "detail": "shared-events/billing-invoice"
     },
     {
       "id": "ev-13",
       "kind": "aws-observed",
       "source": "iam:GetRole",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-stream-role"
+      "detail": "orders-handler-role"
     },
     {
       "id": "ev-14",
       "kind": "aws-observed",
       "source": "iam:GetRole",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-worker-role"
+      "detail": "orders-stream-role"
     },
     {
       "id": "ev-15",
       "kind": "aws-observed",
       "source": "iam:GetRole",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "billing-handler-role"
+      "detail": "orders-worker-role"
     },
     {
       "id": "ev-16",
+      "kind": "aws-observed",
+      "source": "iam:GetRole",
+      "collectedAt": "2026-01-15T12:00:00Z",
+      "detail": "billing-handler-role"
+    },
+    {
+      "id": "ev-17",
       "kind": "aws-observed",
       "source": "apigatewayv2:GetIntegrations",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-api -> orders-handler"
     },
     {
-      "id": "ev-17",
+      "id": "ev-18",
       "kind": "aws-observed",
       "source": "lambda:ListEventSourceMappings",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-table -> orders-stream-processor"
     },
     {
-      "id": "ev-18",
+      "id": "ev-19",
       "kind": "aws-observed",
       "source": "lambda:ListEventSourceMappings",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-queue -> orders-worker"
     },
     {
-      "id": "ev-19",
+      "id": "ev-20",
       "kind": "aws-observed",
       "source": "sqs:GetQueueAttributes.RedrivePolicy",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-queue -> orders-dlq"
     },
     {
-      "id": "ev-20",
+      "id": "ev-21",
+      "kind": "aws-observed",
+      "source": "s3:GetBucketNotificationConfiguration",
+      "collectedAt": "2026-01-15T12:00:00Z",
+      "detail": "orders-exports -> orders-worker"
+    },
+    {
+      "id": "ev-22",
       "kind": "aws-observed",
       "source": "events:ListRules",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-created -> shared-events"
     },
     {
-      "id": "ev-21",
+      "id": "ev-23",
       "kind": "aws-observed",
       "source": "events:ListRules",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "billing-invoice -> shared-events"
     },
     {
-      "id": "ev-22",
+      "id": "ev-24",
       "kind": "aws-observed",
       "source": "events:ListTargetsByRule",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-created -> orders-worker"
     },
     {
-      "id": "ev-23",
+      "id": "ev-25",
       "kind": "aws-observed",
       "source": "events:ListTargetsByRule",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "billing-invoice -> billing-handler"
     },
     {
-      "id": "ev-24",
+      "id": "ev-26",
       "kind": "aws-observed",
       "source": "lambda:GetFunctionConfiguration.Role",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-handler -> orders-handler-role"
     },
     {
-      "id": "ev-25",
+      "id": "ev-27",
       "kind": "aws-observed",
       "source": "lambda:GetFunctionConfiguration.Role",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-stream-processor -> orders-stream-role"
     },
     {
-      "id": "ev-26",
+      "id": "ev-28",
       "kind": "aws-observed",
       "source": "lambda:GetFunctionConfiguration.Role",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-worker -> orders-worker-role"
     },
     {
-      "id": "ev-27",
+      "id": "ev-29",
       "kind": "aws-observed",
       "source": "lambda:GetFunctionConfiguration.Role",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "billing-handler -> billing-handler-role"
     },
     {
-      "id": "ev-28",
+      "id": "ev-30",
       "kind": "aws-observed",
       "source": "iam:GetRole.inlinePolicies(orders-access)",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-handler-role -> orders-table"
     },
     {
-      "id": "ev-29",
+      "id": "ev-31",
       "kind": "aws-observed",
       "source": "iam:GetRole.inlinePolicies(stream-read)",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-stream-role -> orders-table"
     },
     {
-      "id": "ev-30",
+      "id": "ev-32",
       "kind": "aws-observed",
       "source": "iam:GetRole.inlinePolicies(queue-consume)",
       "collectedAt": "2026-01-15T12:00:00Z",
       "detail": "orders-worker-role -> orders-queue"
     },
     {
-      "id": "ev-31",
-      "kind": "aws-observed",
-      "source": "tag:aws:cloudformation:stack-name=orders-stack",
-      "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-api -> orders-table"
-    },
-    {
-      "id": "ev-32",
-      "kind": "aws-observed",
-      "source": "tag:aws:cloudformation:stack-name=orders-stack",
-      "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-table -> orders-created"
-    },
-    {
       "id": "ev-33",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=orders-stack",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-created -> orders-handler"
+      "detail": "orders-exports -> orders-api"
     },
     {
       "id": "ev-34",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=orders-stack",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-handler -> orders-stream-processor"
+      "detail": "orders-api -> orders-table"
     },
     {
       "id": "ev-35",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=orders-stack",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-stream-processor -> orders-worker"
+      "detail": "orders-table -> orders-created"
     },
     {
       "id": "ev-36",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=orders-stack",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-worker -> orders-dlq"
+      "detail": "orders-created -> orders-handler"
     },
     {
       "id": "ev-37",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=orders-stack",
       "collectedAt": "2026-01-15T12:00:00Z",
-      "detail": "orders-dlq -> orders-queue"
+      "detail": "orders-handler -> orders-stream-processor"
     },
     {
       "id": "ev-38",
+      "kind": "aws-observed",
+      "source": "tag:aws:cloudformation:stack-name=orders-stack",
+      "collectedAt": "2026-01-15T12:00:00Z",
+      "detail": "orders-stream-processor -> orders-worker"
+    },
+    {
+      "id": "ev-39",
+      "kind": "aws-observed",
+      "source": "tag:aws:cloudformation:stack-name=orders-stack",
+      "collectedAt": "2026-01-15T12:00:00Z",
+      "detail": "orders-worker -> orders-dlq"
+    },
+    {
+      "id": "ev-40",
+      "kind": "aws-observed",
+      "source": "tag:aws:cloudformation:stack-name=orders-stack",
+      "collectedAt": "2026-01-15T12:00:00Z",
+      "detail": "orders-dlq -> orders-queue"
+    },
+    {
+      "id": "ev-41",
       "kind": "aws-observed",
       "source": "tag:aws:cloudformation:stack-name=billing-stack",
       "collectedAt": "2026-01-15T12:00:00Z",

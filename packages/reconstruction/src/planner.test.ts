@@ -45,6 +45,7 @@ describe('buildPlan', () => {
       'orders-api-messaging',
       'orders-api-compute',
       'orders-api-api',
+      'orders-api-events',
     ]);
     expect(plan.constructs.find((c) => c.id === 'orders-api-references')!.ownership).toBe(
       'reference',
