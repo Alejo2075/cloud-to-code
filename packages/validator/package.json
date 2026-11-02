@@ -1,0 +1,40 @@
+{
+  "name": "@cloud-to-code/validator",
+  "version": "0.1.0",
+  "description": "Offline validation of generated Cloud to Code projects: structure, manifest integrity, typecheck, controlled synth, residual risk and an advisory adoption plan.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "directory": "packages/validator"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@cloud-to-code/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloud-to-code/generator-cdk": "workspace:*",
+    "@cloud-to-code/reconstruction": "workspace:*",
+    "@cloud-to-code/testing": "workspace:*",
+    "aws-cdk-lib": "2.275.0",
+    "constructs": "^10.8.1"
+  }
+}

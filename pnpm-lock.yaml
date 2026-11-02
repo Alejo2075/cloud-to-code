@@ -117,6 +117,28 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/validator:
+    dependencies:
+      '@cloud-to-code/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@cloud-to-code/generator-cdk':
+        specifier: workspace:*
+        version: link:../generator-cdk
+      '@cloud-to-code/reconstruction':
+        specifier: workspace:*
+        version: link:../reconstruction
+      '@cloud-to-code/testing':
+        specifier: workspace:*
+        version: link:../testing
+      aws-cdk-lib:
+        specifier: 2.275.0
+        version: 2.275.0(constructs@10.8.1)
+      constructs:
+        specifier: ^10.8.1
+        version: 10.8.1
+
 packages:
 
   '@aws-cdk/asset-awscli-v1@2.2.292':

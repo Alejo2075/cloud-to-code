@@ -6,6 +6,7 @@
     { "path": "packages/reconstruction" },
     { "path": "packages/diagram-mermaid" },
     { "path": "packages/generator-cdk" },
+    { "path": "packages/validator" },
     { "path": "apps/cli" }
   ]
 }
