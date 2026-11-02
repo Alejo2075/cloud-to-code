@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Local Cloud to Code workspaces and generated output must never be committed
+.c2c/
+/out/
+.tmp/
