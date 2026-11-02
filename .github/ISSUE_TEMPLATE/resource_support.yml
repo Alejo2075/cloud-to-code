@@ -6,7 +6,7 @@ body:
     id: service
     attributes:
       label: AWS service and resource type
-      placeholder: "e.g. AWS::StepFunctions::StateMachine"
+      placeholder: 'e.g. AWS::StepFunctions::StateMachine'
     validations:
       required: true
   - type: textarea

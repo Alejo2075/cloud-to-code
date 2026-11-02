@@ -40,14 +40,14 @@ No AWS account, AI key, or network access is needed to run the test suite.
 
 ## Where contributions help most
 
-| Area | How to start |
-| --- | --- |
+| Area                      | How to start                                                                                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | New AWS service collector | Read `docs/resource-support.md` and `packages/provider-aws/src/collectors/`. Add the read-only commands to the allowlist, a collector, a sanitized fixture, tests, and a matrix row. |
-| Relationship resolvers | `packages/provider-aws/src/resolvers/`. New edges must carry a confidence level and evidence. |
-| Fixtures | `packages/testing/`. Must be synthetic and include an intentional ambiguity when useful. |
-| CDK mapping rules | `packages/generator-cdk/src/rules/`. Prefer L1 when L2 behavior cannot be preserved. |
-| Agent skills | `plugins/`. Keep them thin; they call MCP tools. |
-| Docs | Anything under `docs/`. Fix unclear explanations or stale claims. |
+| Relationship resolvers    | `packages/provider-aws/src/resolvers/`. New edges must carry a confidence level and evidence.                                                                                        |
+| Fixtures                  | `packages/testing/`. Must be synthetic and include an intentional ambiguity when useful.                                                                                             |
+| CDK mapping rules         | `packages/generator-cdk/src/rules/`. Prefer L1 when L2 behavior cannot be preserved.                                                                                                 |
+| Agent skills              | `plugins/`. Keep them thin; they call MCP tools.                                                                                                                                     |
+| Docs                      | Anything under `docs/`. Fix unclear explanations or stale claims.                                                                                                                    |
 
 Look for issues labeled `good first issue` and `help wanted`.
 

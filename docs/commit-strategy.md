@@ -7,7 +7,7 @@ Applies to the whole project lifetime. Companion to [development-plan.md](develo
 1. **One logical change per commit.** A commit builds, passes lint/typecheck/tests on its own, and can be reverted alone.
 2. **Tests travel with code.** A feature commit includes its tests (including a negative case). Never "add tests later".
 3. **Contracts first.** Schema commits land before the code that consumes them.
-4. **History is documentation.** Commit bodies explain *why*, especially for safety, schema, and AWS-permission decisions.
+4. **History is documentation.** Commit bodies explain _why_, especially for safety, schema, and AWS-permission decisions.
 5. **No secrets, ever.** Fixtures are synthetic or sanitized. A leaked credential means rotate first, then rewrite history.
 6. **Nothing is pushed, tagged, or published without explicit maintainer approval.**
 
@@ -23,20 +23,20 @@ Applies to the whole project lifetime. Companion to [development-plan.md](develo
 
 ### Types
 
-| Type | Use |
-| --- | --- |
-| `feat` | New user-visible or API capability |
-| `fix` | Bug fix |
-| `schema` | Change to a versioned public model (also use `!` if breaking) |
-| `docs` | Documentation only |
-| `test` | Tests/fixtures only |
-| `refactor` | Behavior-preserving restructuring |
-| `perf` | Performance improvement |
-| `build` | Build system, pnpm, TypeScript config, dependencies |
-| `ci` | GitHub Actions and automation |
-| `chore` | Repo maintenance with no product effect |
-| `security` | Hardening, sanitization, allowlist changes |
-| `revert` | Reverts a previous commit |
+| Type       | Use                                                           |
+| ---------- | ------------------------------------------------------------- |
+| `feat`     | New user-visible or API capability                            |
+| `fix`      | Bug fix                                                       |
+| `schema`   | Change to a versioned public model (also use `!` if breaking) |
+| `docs`     | Documentation only                                            |
+| `test`     | Tests/fixtures only                                           |
+| `refactor` | Behavior-preserving restructuring                             |
+| `perf`     | Performance improvement                                       |
+| `build`    | Build system, pnpm, TypeScript config, dependencies           |
+| `ci`       | GitHub Actions and automation                                 |
+| `chore`    | Repo maintenance with no product effect                       |
+| `security` | Hardening, sanitization, allowlist changes                    |
+| `revert`   | Reverts a previous commit                                     |
 
 ### Scopes (match the package/area)
 
@@ -96,27 +96,28 @@ Signed-off-by: Jane Dev <jane@example.com>
 ## 4. Pull requests
 
 - **Size:** target under 400 changed lines excluding fixtures and lockfiles. Larger PRs need a justification in the description.
-- **Merge method:** *squash* for single-purpose PRs (the PR title becomes the commit and must follow the format above); *rebase-merge* when each commit is already clean and meaningful (milestone PRs).
+- **Merge method:** _squash_ for single-purpose PRs (the PR title becomes the commit and must follow the format above); _rebase-merge_ when each commit is already clean and meaningful (milestone PRs).
 - **Title** follows Conventional Commits; **description** states: what, why, evidence of testing, negative case, docs updated, AWS permissions or dependencies introduced.
 - **Checklist (PR template):** tests added incl. negative case; docs and `resource-support.md` synced; no unsupported capability claims; schema change has migration; DCO signed.
 - Schema, security-allowlist, and consent-flow changes require a second reviewer (CODEOWNERS).
 
 ## 5. Atomic commit recipes
 
-| Change | Commits (in order) |
-| --- | --- |
-| New schema | `schema` (types + tests) -> `docs` (interaction-model/architecture) |
-| New AWS collector | `schema`/`feat(core)` if new relationship kinds -> `security(aws)` allowlist entries -> `feat(aws)` collector + mocks -> `test(testing)` fixture -> `docs(docs)` support matrix |
-| New CLI command | `feat(reconstruction)` use case + tests -> `feat(cli)` command wiring + JSON contract tests -> `docs` |
-| New generated construct mapping | `feat(generator)` mapping + unit tests -> `test(generator)` snapshot/CDK assertions -> `docs` coverage notes |
-| Dependency addition | `build(deps)` with rationale and security implications in the body (CLAUDE.md section 18.14) |
-| Bug fix | `test` reproducing failure (may be same commit) + `fix` |
+| Change                          | Commits (in order)                                                                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| New schema                      | `schema` (types + tests) -> `docs` (interaction-model/architecture)                                                                                                             |
+| New AWS collector               | `schema`/`feat(core)` if new relationship kinds -> `security(aws)` allowlist entries -> `feat(aws)` collector + mocks -> `test(testing)` fixture -> `docs(docs)` support matrix |
+| New CLI command                 | `feat(reconstruction)` use case + tests -> `feat(cli)` command wiring + JSON contract tests -> `docs`                                                                           |
+| New generated construct mapping | `feat(generator)` mapping + unit tests -> `test(generator)` snapshot/CDK assertions -> `docs` coverage notes                                                                    |
+| Dependency addition             | `build(deps)` with rationale and security implications in the body (CLAUDE.md section 18.14)                                                                                    |
+| Bug fix                         | `test` reproducing failure (may be same commit) + `fix`                                                                                                                         |
 
 ## 6. Phase 0 commit plan (concrete)
 
 Target: roughly 35 commits on `main` through squash/rebase merges. Each line is one commit.
 
 **Repo bootstrap**
+
 1. `chore(repo): initialize repository with Apache-2.0 license and NOTICE`
 2. `build(repo): add pnpm workspace, tsconfig.base strict ESM, .nvmrc, .editorconfig`
 3. `build(repo): add eslint flat config, prettier, and shared vitest config`
@@ -127,42 +128,13 @@ Target: roughly 35 commits on `main` through squash/rebase merges. Each line is 
 8. `chore(repo): add issue forms, PR template, CODEOWNERS, dependabot`
 9. `docs(docs): add architecture.md, roadmap.md, ADR 0001 and 0002`
 
-**M0: contracts** (`packages/core`)
-10. `build(core): scaffold @cloud-to-code/core package`
-11. `schema(core): add Evidence, Diagnostic, and ID/ARN primitives`
-12. `schema(core): add CloudResource, Relationship, CloudSnapshot`
-13. `schema(core): add Question, Decision, Session, and state machine types`
-14. `schema(core): specify StackPlan, ConstructPlan, Assumption, UnresolvedProperty, ReconstructionPlan`
-15. `feat(core): add schemaVersion registry and migration framework`
-16. `test(core): add round-trip, rejection, and compatibility tests`
+**M0: contracts** (`packages/core`) 10. `build(core): scaffold @cloud-to-code/core package` 11. `schema(core): add Evidence, Diagnostic, and ID/ARN primitives` 12. `schema(core): add CloudResource, Relationship, CloudSnapshot` 13. `schema(core): add Question, Decision, Session, and state machine types` 14. `schema(core): specify StackPlan, ConstructPlan, Assumption, UnresolvedProperty, ReconstructionPlan` 15. `feat(core): add schemaVersion registry and migration framework` 16. `test(core): add round-trip, rejection, and compatibility tests`
 
-**M1: fixture + graph**
-17. `build(testing): scaffold @cloud-to-code/testing package`
-18. `test(testing): add sanitized serverless-orders snapshot fixture`
-19. `feat(core): add graph builder with deduplication and edge direction`
-20. `feat(core): model IAM-derived edges as possible-access`
-21. `test(core): graph tests (ARN variants, unresolved refs, global resources)`
+**M1: fixture + graph** 17. `build(testing): scaffold @cloud-to-code/testing package` 18. `test(testing): add sanitized serverless-orders snapshot fixture` 19. `feat(core): add graph builder with deduplication and edge direction` 20. `feat(core): model IAM-derived edges as possible-access` 21. `test(core): graph tests (ARN variants, unresolved refs, global resources)`
 
-**M2: questions + sessions**
-22. `build(reconstruction): scaffold @cloud-to-code/reconstruction package`
-23. `feat(reconstruction): add ambiguity detectors (shared resource, unlinked source, possible-access)`
-24. `feat(reconstruction): generate questions with evidence, options, and consequences`
-25. `feat(reconstruction): add session state machine and .c2c workspace store`
-26. `security(reconstruction): redact secrets in free-text answers before persistence`
-27. `feat(reconstruction): record decisions with provenance and revision history`
-28. `feat(reconstruction): invalidate decisions when evidence changes`
-29. `test(testing): add fake AI adapter`
-30. `test(reconstruction): blocking-question, resume, unknown-answer, and fake-decision rejection tests`
+**M2: questions + sessions** 22. `build(reconstruction): scaffold @cloud-to-code/reconstruction package` 23. `feat(reconstruction): add ambiguity detectors (shared resource, unlinked source, possible-access)` 24. `feat(reconstruction): generate questions with evidence, options, and consequences` 25. `feat(reconstruction): add session state machine and .c2c workspace store` 26. `security(reconstruction): redact secrets in free-text answers before persistence` 27. `feat(reconstruction): record decisions with provenance and revision history` 28. `feat(reconstruction): invalidate decisions when evidence changes` 29. `test(testing): add fake AI adapter` 30. `test(reconstruction): blocking-question, resume, unknown-answer, and fake-decision rejection tests`
 
-**M3: CLI**
-31. `build(cli): scaffold @cloud-to-code/cli with c2c bin`
-32. `feat(cli): add inspect command with human and --json output`
-33. `feat(cli): add questions, answer, resume, decisions commands`
-34. `feat(cli): add non-interactive NEEDS_INPUT contract and --answers`
-35. `feat(diagram): deterministic Mermaid output from graph` (internal module until `diagram-mermaid` is justified as a package)
-36. `test(cli): end-to-end inspect -> answer -> resume workflow`
-37. `test(core): prompt-injection and sanitization regression tests`
-38. `docs(docs): sync README Status, interaction-model.md, and resource-support.md`
+**M3: CLI** 31. `build(cli): scaffold @cloud-to-code/cli with c2c bin` 32. `feat(cli): add inspect command with human and --json output` 33. `feat(cli): add questions, answer, resume, decisions commands` 34. `feat(cli): add non-interactive NEEDS_INPUT contract and --answers` 35. `feat(diagram): deterministic Mermaid output from graph` (internal module until `diagram-mermaid` is justified as a package) 36. `test(cli): end-to-end inspect -> answer -> resume workflow` 37. `test(core): prompt-injection and sanitization regression tests` 38. `docs(docs): sync README Status, interaction-model.md, and resource-support.md`
 
 Exit of Phase 0: tag `v0.1.0-alpha.0` (maintainer decision).
 
@@ -186,7 +158,7 @@ Exit of Phase 0: tag `v0.1.0-alpha.0` (maintainer decision).
 
 - `commitlint` (conventional config + scope enum) in CI on PR titles and commits.
 - DCO app/action verifying `Signed-off-by`.
-- `lint-staged` + a local `commit-msg` hook are *optional* developer conveniences; CI is the source of truth. Persistent hooks are never installed without the owner's approval.
+- `lint-staged` + a local `commit-msg` hook are _optional_ developer conveniences; CI is the source of truth. Persistent hooks are never installed without the owner's approval.
 - Secret scanning (GitHub push protection) enabled on the repository.
 
 ## 10. Reverts and history hygiene

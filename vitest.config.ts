@@ -19,7 +19,11 @@ for (const dir of ['packages', 'apps']) {
 export default defineConfig({
   resolve: { alias },
   test: {
-    include: ['packages/*/src/**/*.test.ts', 'apps/*/src/**/*.test.ts', 'plugins/**/test/**/*.test.ts'],
+    include: [
+      'packages/*/src/**/*.test.ts',
+      'apps/*/src/**/*.test.ts',
+      'plugins/**/test/**/*.test.ts',
+    ],
     testTimeout: 30_000,
     hookTimeout: 60_000,
   },
