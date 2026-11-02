@@ -7,6 +7,7 @@
     { "path": "packages/diagram-mermaid" },
     { "path": "packages/generator-cdk" },
     { "path": "packages/validator" },
+    { "path": "packages/provider-aws" },
     { "path": "apps/cli" }
   ]
 }

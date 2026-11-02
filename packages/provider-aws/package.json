@@ -1,0 +1,45 @@
+{
+  "name": "@cloud-to-code/provider-aws",
+  "version": "0.1.0",
+  "description": "Read-only AWS discovery for Cloud to Code: scoped collectors, an SDK command allowlist and sanitization before anything is stored.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "directory": "packages/provider-aws"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewayv2": "^3.1161.0",
+    "@aws-sdk/client-dynamodb": "^3.1161.0",
+    "@aws-sdk/client-eventbridge": "^3.1161.0",
+    "@aws-sdk/client-iam": "^3.1161.0",
+    "@aws-sdk/client-lambda": "^3.1161.0",
+    "@aws-sdk/client-s3": "^3.1161.0",
+    "@aws-sdk/client-sqs": "^3.1161.0",
+    "@aws-sdk/client-sts": "^3.1161.0",
+    "@aws-sdk/credential-providers": "^3.1161.0",
+    "@cloud-to-code/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloud-to-code/testing": "workspace:*"
+  }
+}
