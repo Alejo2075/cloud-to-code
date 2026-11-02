@@ -7,3 +7,4 @@ export * from './snapshot-integrity.js';
 export * from './graph.js';
 export * from './session-machine.js';
 export * from './answers.js';
+export * from './snapshot-sanitize.js';

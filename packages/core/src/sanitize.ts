@@ -18,6 +18,7 @@ const SECRET_KEY_SUFFIXES = [
   'secretkey',
   'apikey',
   'privatekey',
+  'token',
   'accesstoken',
   'authtoken',
   'bearertoken',

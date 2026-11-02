@@ -76,6 +76,7 @@ describe('isSecretKey', () => {
     ['authorizationType', false],
     ['secretArn', false],
     ['tokenValidity', false],
+    ['deployToken', true],
   ])('%s -> %s', (key, expected) => expect(isSecretKey(key)).toBe(expected));
 });
 
