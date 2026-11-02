@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import {
+  EvidenceGraph,
   createSession,
   shortHash,
   transitionSession,
@@ -14,7 +15,7 @@ import {
   type Strategy,
 } from '@cloud-to-code/core';
 import { MAX_QUESTIONS_PER_BATCH, computeQuestions, selectBatch } from './questions.js';
-import { buildPlan, PlanningError } from './planner.js';
+import { buildPlan, PlanningError, selectApplication } from './planner.js';
 import { verifyPlan, type PlanIssue } from './verify.js';
 import type { WorkspaceStore } from './workspace.js';
 
@@ -102,6 +103,8 @@ export class ReconstructionService {
     snapshot: CloudSnapshot,
     options: { strategy?: Strategy; applicationId?: string } = {},
   ): Session {
+    if (options.applicationId)
+      selectApplication(new EvidenceGraph(snapshot), options.applicationId);
     const id = `sess-${snapshot.id.replace(/^snap-/, '').slice(0, 8)}-${this.newId()}`;
     let session = createSession({
       id,
@@ -119,10 +122,21 @@ export class ReconstructionService {
   /** Current state of every question: unanswered / answered / unknown / reopened by changed evidence. */
   questionStates(sessionId: string): QuestionState[] {
     const snapshot = this.store.loadSnapshot(sessionId);
+    const session = this.store.loadSession(sessionId);
     const decisions = this.store.loadDecisions(sessionId);
     const latest = new Map<string, DeveloperDecision>();
     for (const d of decisions) latest.set(d.questionId, d);
-    return computeQuestions(snapshot, sessionId).map((question): QuestionState => {
+    // When an application is selected, only its questions (and the shared resources it touches) apply.
+    let scope: Set<string> | undefined;
+    if (session.applicationId) {
+      const app = selectApplication(new EvidenceGraph(snapshot), session.applicationId);
+      scope = new Set([...app.resourceIds, ...app.sharedResourceIds]);
+    }
+    const all = computeQuestions(snapshot, sessionId);
+    const relevant = scope
+      ? all.filter((q) => q.relatedResourceIds.some((id) => scope.has(id)))
+      : all;
+    return relevant.map((question): QuestionState => {
       const decision = latest.get(question.id);
       if (!decision) return { question, status: 'unanswered' };
       if (decision.subjectHash !== question.subjectHash) {

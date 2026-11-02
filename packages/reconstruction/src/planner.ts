@@ -1,5 +1,6 @@
 import {
   EvidenceGraph,
+  type ApplicationCandidate,
   type Assumption,
   type CloudResource,
   type CloudSnapshot,
@@ -39,6 +40,36 @@ export function applicationIdFor(name: string): string {
 }
 
 /**
+ * Resolve the application candidate to reconstruct. With no `applicationId`, exactly one candidate must
+ * exist; otherwise the caller (a human or the host agent) must choose. Never guesses between candidates.
+ */
+export function selectApplication(
+  graph: EvidenceGraph,
+  applicationId?: string,
+): ApplicationCandidate {
+  const { candidates } = graph.applicationCandidates();
+  if (candidates.length === 0)
+    throw new PlanningError('no-candidates', 'The snapshot has no application candidates.');
+  const wanted = applicationId?.toLowerCase();
+  const candidate = wanted
+    ? candidates.find(
+        (c) =>
+          c.id === wanted || applicationIdFor(c.name) === wanted || c.name.toLowerCase() === wanted,
+      )
+    : candidates.length === 1
+      ? candidates[0]
+      : undefined;
+  if (candidate) return candidate;
+  const names = candidates.map((c) => applicationIdFor(c.name)).join(', ');
+  throw new PlanningError(
+    wanted ? 'application-not-found' : 'application-not-selected',
+    wanted
+      ? `Application "${applicationId}" not found. Candidates: ${names}.`
+      : `Several application candidates found (${names}). Select one with --application.`,
+  );
+}
+
+/**
  * Deterministic planner: derives a reconstruction plan from the evidence graph and recorded developer
  * decisions only. It never asks a model. Same inputs always produce the same plan.
  */
@@ -58,28 +89,7 @@ export function buildPlan(input: PlanInput): ReconstructionPlan {
   }
 
   const graph = new EvidenceGraph(snapshot);
-  const { candidates } = graph.applicationCandidates();
-  if (candidates.length === 0)
-    throw new PlanningError('no-candidates', 'The snapshot has no application candidates.');
-
-  const wanted = input.applicationId?.toLowerCase();
-  const candidate = wanted
-    ? candidates.find(
-        (c) =>
-          c.id === wanted || applicationIdFor(c.name) === wanted || c.name.toLowerCase() === wanted,
-      )
-    : candidates.length === 1
-      ? candidates[0]
-      : undefined;
-  if (!candidate) {
-    const names = candidates.map((c) => applicationIdFor(c.name)).join(', ');
-    throw new PlanningError(
-      wanted ? 'application-not-found' : 'application-not-selected',
-      wanted
-        ? `Application "${input.applicationId}" not found. Candidates: ${names}.`
-        : `Several application candidates found (${names}). Select one with --application.`,
-    );
-  }
+  const candidate = selectApplication(graph, input.applicationId);
   const app = candidate;
   const appId = applicationIdFor(app.name);
 

@@ -163,6 +163,20 @@ describe('session lifecycle', () => {
   });
 });
 
+describe('application-scoped sessions', () => {
+  it('only asks questions that apply to the selected application', () => {
+    const svc = makeService();
+    const { id } = svc.startSession(snapshot, { applicationId: 'billing-handler' });
+    const ids = svc.pending(id, { all: true }).questions.map((q) => q.id);
+    expect(ids).toEqual(['q-shared-shared-events', 'q-lambda-source-billing-handler']);
+  });
+
+  it('rejects an unknown application and never picks one silently', () => {
+    const svc = makeService();
+    expect(() => svc.startSession(snapshot, { applicationId: 'nope' })).toThrow(/not found/);
+  });
+});
+
 describe('workspace safety', () => {
   it('uses private permissions and keeps credentials out of the workspace', () => {
     const svc = makeService();
