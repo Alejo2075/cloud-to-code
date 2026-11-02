@@ -112,7 +112,11 @@ describe('controlled synth', () => {
         argv: string[];
       };
       expect(dump.argv[0]).toBe('synth');
-      expect(Object.keys(dump.env).filter((k) => k.startsWith('AWS_'))).toEqual([]);
+      expect(
+        Object.keys(dump.env)
+          .filter((k) => k.startsWith('AWS_'))
+          .sort(),
+      ).toEqual(['AWS_CONFIG_FILE', 'AWS_SHARED_CREDENTIALS_FILE']);
       expect(JSON.stringify(dump)).not.toContain('canary');
     } finally {
       delete process.env['AWS_SECRET_ACCESS_KEY'];
@@ -135,6 +139,46 @@ describe('controlled synth', () => {
     expect(byId(trusted, 'synth').status).toBe('pass');
   });
 
+  it('fails closed: a missing or unreadable manifest also blocks synth unless trusted', async () => {
+    const dir = fresh('synth-nomanifest');
+    const marker = installFakeCdk(dir);
+    rmSync(join(dir, '.c2c', 'manifest.json'));
+    const report = await validateProject(dir, { synth: true, typecheck: false });
+    expect(byId(report, 'synth').status).toBe('skipped');
+    expect(byId(report, 'synth').detail).toMatch(/Refusing to execute/);
+    expect(existsSync(marker)).toBe(false);
+  });
+
+  it('gives the synth child a throwaway HOME and null credential files', async () => {
+    const dir = fresh('synth-home');
+    const marker = installFakeCdk(dir);
+    await validateProject(dir, { synth: true, typecheck: false });
+    const dump = JSON.parse(readFileSync(marker, 'utf8')) as { env: Record<string, string> };
+    expect(dump.env['HOME']).toMatch(/c2c-home-/);
+    expect(dump.env['HOME']).not.toBe(process.env['HOME']);
+    expect(dump.env['AWS_SHARED_CREDENTIALS_FILE']).toBe('/dev/null');
+  });
+
+  it('fails closed: a missing manifest also blocks synth unless trusted', async () => {
+    const dir = fresh('synth-nomanifest');
+    const marker = installFakeCdk(dir);
+    rmSync(join(dir, '.c2c', 'manifest.json'));
+    const report = await validateProject(dir, { synth: true, typecheck: false });
+    expect(byId(report, 'synth').status).toBe('skipped');
+    expect(byId(report, 'synth').detail).toMatch(/Refusing to execute/);
+    expect(existsSync(marker)).toBe(false);
+  });
+
+  it('gives the synth child a throwaway HOME and null credential files', async () => {
+    const dir = fresh('synth-home');
+    const marker = installFakeCdk(dir);
+    await validateProject(dir, { synth: true, typecheck: false });
+    const dump = JSON.parse(readFileSync(marker, 'utf8')) as { env: Record<string, string> };
+    expect(dump.env['HOME']).toMatch(/c2c-home-/);
+    expect(dump.env['HOME']).not.toBe(process.env['HOME']);
+    expect(dump.env['AWS_SHARED_CREDENTIALS_FILE']).toBe('/dev/null');
+  });
+
   it('skips with guidance when dependencies are not installed, and never installs anything', async () => {
     const dir = fresh('synth-nodeps');
     const report = await validateProject(dir, { synth: true, typecheck: false });
@@ -144,13 +188,18 @@ describe('controlled synth', () => {
   });
 
   it('scrubs the environment', () => {
-    const env = scrubbedEnv({
+    const env = scrubbedEnv(
+      { PATH: '/bin', AWS_ACCESS_KEY_ID: 'x', GITHUB_TOKEN: 'y', HOME: '/h' },
+      '/fake-home',
+    );
+    expect(env).toMatchObject({
       PATH: '/bin',
-      AWS_ACCESS_KEY_ID: 'x',
-      GITHUB_TOKEN: 'y',
-      HOME: '/h',
+      HOME: '/fake-home',
+      USERPROFILE: '/fake-home',
+      CI: 'true',
     });
-    expect(env).toMatchObject({ PATH: '/bin', HOME: '/h', CI: 'true' });
+    expect(env['AWS_SHARED_CREDENTIALS_FILE']).toBe('/dev/null');
+    expect(env['AWS_CONFIG_FILE']).toBe('/dev/null');
     expect(Object.keys(env)).not.toContain('AWS_ACCESS_KEY_ID');
     expect(Object.keys(env)).not.toContain('GITHUB_TOKEN');
   });

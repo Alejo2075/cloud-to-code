@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { devNull, tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
 import { sha256Hex } from '@cloud-to-code/core';
@@ -66,21 +67,25 @@ function readJson<T>(path: string): T | undefined {
   }
 }
 
-/** Environment passed to child processes: no AWS credentials or tokens, ever. */
-export function scrubbedEnv(source: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
+/**
+ * Environment passed to child processes. Only a few neutral variables are kept; HOME/USERPROFILE point at a
+ * throwaway empty directory and the shared AWS credential/config files are pointed at the null device, so the
+ * usual file-based credential locations are not reachable by default. This reduces, but does not eliminate,
+ * exposure: code you choose to execute still runs as your OS user.
+ */
+export function scrubbedEnv(
+  source: NodeJS.ProcessEnv = process.env,
+  home?: string,
+): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = {};
-  for (const key of [
-    'PATH',
-    'HOME',
-    'USERPROFILE',
-    'TMPDIR',
-    'TEMP',
-    'TMP',
-    'SystemRoot',
-    'LANG',
-  ]) {
+  for (const key of ['PATH', 'TMPDIR', 'TEMP', 'TMP', 'SystemRoot', 'LANG']) {
     if (source[key] !== undefined) env[key] = source[key];
   }
+  const fakeHome = home ?? mkdtempSync(join(tmpdir(), 'c2c-home-'));
+  env['HOME'] = fakeHome;
+  env['USERPROFILE'] = fakeHome;
+  env['AWS_SHARED_CREDENTIALS_FILE'] = devNull;
+  env['AWS_CONFIG_FILE'] = devNull;
   env['CI'] = 'true';
   env['CDK_DISABLE_VERSION_CHECK'] = '1';
   env['CDK_CLI_TELEMETRY'] = 'false';
@@ -94,9 +99,11 @@ function run(
   options: { cwd: string; timeoutMs: number },
 ): Promise<{ code: number | null; output: string; timedOut: boolean }> {
   return new Promise((resolvePromise) => {
+    const home = mkdtempSync(join(tmpdir(), 'c2c-home-'));
+    const cleanup = () => rmSync(home, { recursive: true, force: true });
     const child = spawn(command, args, {
       cwd: options.cwd,
-      env: scrubbedEnv(),
+      env: scrubbedEnv(process.env, home),
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     let output = '';
@@ -112,10 +119,12 @@ function run(
     child.stderr.on('data', collect);
     child.on('error', (error) => {
       clearTimeout(timer);
+      cleanup();
       resolvePromise({ code: null, output: String(error), timedOut });
     });
     child.on('close', (code) => {
       clearTimeout(timer);
+      cleanup();
       resolvePromise({ code, output: output.trim(), timedOut });
     });
   });
@@ -275,6 +284,7 @@ async function checkTypecheck(dir: string, timeoutMs: number): Promise<Check> {
 async function checkSynth(
   dir: string,
   modified: string[],
+  manifestStatus: CheckStatus,
   options: ValidateOptions,
   timeoutMs: number,
 ): Promise<Check> {
@@ -288,12 +298,13 @@ async function checkSynth(
         "Not requested. `cdk synth` executes the project's TypeScript, so it only runs with --synth.",
     };
   }
-  if (modified.length > 0 && !options.trust) {
+  // Fail closed: execute only code verified against the manifest, unless the developer vouches for it.
+  if (manifestStatus !== 'pass' && !options.trust) {
     return {
       id: 'synth',
       title,
       status: 'skipped',
-      detail: `Refusing to execute code that differs from what was generated (${modified.join(', ')}). Review it, then pass --trust to run it anyway.`,
+      detail: `Refusing to execute code that could not be verified against the generated manifest (${manifestStatus}${modified.length > 0 ? `: ${modified.join(', ')}` : ''}). Review it, then pass --trust to run it anyway.`,
     };
   }
   const cdk = resolveBin(dir, 'cdk');
@@ -318,7 +329,7 @@ async function checkSynth(
         title,
         status: 'pass',
         detail:
-          'The app synthesizes a CloudFormation template (credentials were withheld from the process). This is not a safety proof.',
+          'The app synthesizes a CloudFormation template (AWS credential variables and the usual credential files were withheld from the process). This is not a safety proof.',
       }
     : {
         id: 'synth',
@@ -345,7 +356,7 @@ export async function validateProject(
   const coverage = checkCoverage(dir);
   checks.push(coverage.check);
   if (options.typecheck !== false) checks.push(await checkTypecheck(dir, timeoutMs));
-  checks.push(await checkSynth(dir, manifest.modified, options, timeoutMs));
+  checks.push(await checkSynth(dir, manifest.modified, manifest.check.status, options, timeoutMs));
 
   const failed = checks.some((c) => c.status === 'fail');
   const warned = checks.some((c) => c.status === 'warn' || c.status === 'skipped');
