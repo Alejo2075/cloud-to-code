@@ -50,12 +50,18 @@ importers:
       '@cloud-to-code/diagram-mermaid':
         specifier: workspace:*
         version: link:../../packages/diagram-mermaid
+      '@cloud-to-code/generator-cdk':
+        specifier: workspace:*
+        version: link:../../packages/generator-cdk
       '@cloud-to-code/reconstruction':
         specifier: workspace:*
         version: link:../../packages/reconstruction
       '@cloud-to-code/testing':
         specifier: workspace:*
         version: link:../../packages/testing
+      '@cloud-to-code/validator':
+        specifier: workspace:*
+        version: link:../../packages/validator
       commander:
         specifier: ^15.0.0
         version: 15.0.0

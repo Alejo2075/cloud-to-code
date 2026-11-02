@@ -1,6 +1,7 @@
 import { Command, CommanderError } from 'commander';
 import { createContext, type GlobalOptions } from './context.js';
 import { runDemo } from './commands/demo.js';
+import { runAdoptionPlan, runGenerate, runValidate } from './commands/generate.js';
 import { runInspect } from './commands/inspect.js';
 import {
   runAnswer,
@@ -72,8 +73,53 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
       '--strategy <strategy>',
       'balanced (default); faithful and modernized are not implemented yet',
     )
+    .option(
+      '--output <dir>',
+      'generate the CDK project into this NEW directory once the plan is verified',
+    )
+    .option(
+      '--overwrite',
+      'allow --output to replace files in a non-empty directory (never the default)',
+    )
     .action(async (application: string | undefined, options) => {
       exitCode = await runReconstruct(ctx(), application, options);
+    });
+
+  program
+    .command('generate')
+    .description(
+      'Generate the CDK project from the verified plan of a session (blocking questions must be answered)',
+    )
+    .requiredOption('--output <dir>', 'directory to write the project into (must be new or empty)')
+    .option('--overwrite', 'replace files in a non-empty directory (never the default)')
+    .option('--answers <file>', 'answers file (JSON) to apply first')
+    .action(async (options) => {
+      exitCode = await runGenerate(ctx(), options);
+    });
+
+  program
+    .command('validate <directory>')
+    .description(
+      'Offline checks of a generated project: structure, manifest, coverage, typecheck, optional synth',
+    )
+    .option(
+      '--synth',
+      "also run the project's own `cdk synth` (executes the project's code, credentials withheld)",
+    )
+    .option('--trust', 'allow --synth although files differ from the generated manifest')
+    .option('--no-typecheck', 'skip the TypeScript typecheck')
+    .action(async (directory: string, options) => {
+      exitCode = await runValidate(ctx(), directory, options);
+    });
+
+  const adoption = program
+    .command('adoption')
+    .description('Advisory migration analysis (never applies changes)');
+  adoption
+    .command('plan <directory>')
+    .description('Describe what adopting existing resources would involve; reads reports only')
+    .action((directory: string) => {
+      exitCode = runAdoptionPlan(ctx(), directory);
     });
 
   program

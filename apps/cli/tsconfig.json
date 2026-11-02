@@ -11,6 +11,8 @@
     { "path": "../../packages/core" },
     { "path": "../../packages/reconstruction" },
     { "path": "../../packages/diagram-mermaid" },
-    { "path": "../../packages/testing" }
+    { "path": "../../packages/testing" },
+    { "path": "../../packages/generator-cdk" },
+    { "path": "../../packages/validator" }
   ]
 }
