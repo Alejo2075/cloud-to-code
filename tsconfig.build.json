@@ -5,6 +5,7 @@
     { "path": "packages/testing" },
     { "path": "packages/reconstruction" },
     { "path": "packages/diagram-mermaid" },
+    { "path": "packages/generator-cdk" },
     { "path": "apps/cli" }
   ]
 }

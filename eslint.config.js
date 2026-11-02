@@ -18,7 +18,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/node_modules/**',
       'coverage/**',
-      '.tmp/**',
+      '**/.tmp/**',
       '**/golden/**',
       'examples/**/expected/**',
     ],
