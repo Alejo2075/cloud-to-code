@@ -1,0 +1,20 @@
+name: Resource support request
+description: Ask for an AWS service or resource type to be supported
+labels: [resource-support, triage]
+body:
+  - type: input
+    id: service
+    attributes:
+      label: AWS service and resource type
+      placeholder: "e.g. AWS::StepFunctions::StateMachine"
+    validations:
+      required: true
+  - type: textarea
+    id: relationships
+    attributes:
+      label: Relationships to other resources that matter
+  - type: textarea
+    id: apis
+    attributes:
+      label: Read-only List/Describe/Get APIs you expect to be needed
+      description: Do not propose APIs that read data (objects, items, secret values, code).

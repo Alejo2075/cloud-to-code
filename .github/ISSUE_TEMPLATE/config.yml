@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea (Discussions)
+    url: https://github.com/OWNER/cloud-to-code/discussions
+    about: Ask questions and share ideas before opening an issue.
+  - name: Security vulnerability
+    url: https://github.com/OWNER/cloud-to-code/security/advisories/new
+    about: Report vulnerabilities privately. Do not open a public issue.

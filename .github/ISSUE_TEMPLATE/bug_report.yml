@@ -1,0 +1,40 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Never paste credentials, account secrets, or unsanitized snapshots.** Use `c2c inspect --json` on a sanitized fixture where possible.
+  - type: input
+    id: version
+    attributes:
+      label: Cloud to Code version
+      placeholder: "c2c --version"
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: "node -v"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Commands and (sanitized) inputs.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output / diagnostics
+      render: shell
