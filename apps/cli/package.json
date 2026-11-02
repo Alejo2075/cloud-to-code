@@ -1,0 +1,56 @@
+{
+  "name": "@cloud-to-code/cli",
+  "version": "0.1.0",
+  "description": "c2c: turn running AWS infrastructure into AWS CDK code you can understand, review and own. Local-first, read-only on AWS.",
+  "keywords": [
+    "aws",
+    "cdk",
+    "aws-cdk",
+    "infrastructure-as-code",
+    "iac",
+    "reverse-engineering",
+    "cloudformation",
+    "typescript",
+    "mcp",
+    "claude-code",
+    "cli"
+  ],
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/OWNER/cloud-to-code#readme",
+  "bugs": "https://github.com/OWNER/cloud-to-code/issues",
+  "bin": {
+    "c2c": "./dist/bin.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "@cloud-to-code/core": "workspace:*",
+    "@cloud-to-code/diagram-mermaid": "workspace:*",
+    "@cloud-to-code/reconstruction": "workspace:*",
+    "@cloud-to-code/testing": "workspace:*",
+    "commander": "^15.0.0"
+  }
+}

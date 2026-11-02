@@ -4,6 +4,7 @@
     { "path": "packages/core" },
     { "path": "packages/testing" },
     { "path": "packages/reconstruction" },
-    { "path": "packages/diagram-mermaid" }
+    { "path": "packages/diagram-mermaid" },
+    { "path": "apps/cli" }
   ]
 }
