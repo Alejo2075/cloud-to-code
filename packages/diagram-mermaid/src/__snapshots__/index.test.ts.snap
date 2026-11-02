@@ -1,0 +1,40 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderMermaid > matches the golden diagram 1`] = `
+"flowchart LR
+  subgraph app1["billing-handler"]
+    n1("billing-handler-role<br/>IAM Role")
+    n8>"billing-invoice<br/>Events Rule"]
+    n10["billing-handler<br/>Lambda Function"]
+  end
+  subgraph app2["orders-api"]
+    n2("orders-handler-role<br/>IAM Role")
+    n3("orders-stream-role<br/>IAM Role")
+    n4("orders-worker-role<br/>IAM Role")
+    n5(["orders-api<br/>ApiGatewayV2 Api"])
+    n6[("orders-table<br/>DynamoDB Table")]
+    n9>"orders-created<br/>Events Rule"]
+    n11["orders-handler<br/>Lambda Function"]
+    n12["orders-stream-processor<br/>Lambda Function"]
+    n13["orders-worker<br/>Lambda Function"]
+    n14[["orders-dlq<br/>SQS Queue"]]
+    n15[["orders-queue<br/>SQS Queue"]]
+  end
+  n7{{"shared-events<br/>Events EventBus"}}
+  n2 -. "possible-access #40;hypothesis#41;" .-> n6
+  n3 -. "possible-access #40;hypothesis#41;" .-> n6
+  n4 -. "possible-access #40;hypothesis#41;" .-> n15
+  n5 -- "routes-to" --> n11
+  n6 -- "triggers" --> n12
+  n8 -- "rule-on-bus" --> n7
+  n8 -- "targets" --> n10
+  n9 -- "rule-on-bus" --> n7
+  n9 -- "targets" --> n13
+  n10 -- "assumes-role" --> n1
+  n11 -- "assumes-role" --> n2
+  n12 -- "assumes-role" --> n3
+  n13 -- "assumes-role" --> n4
+  n15 -- "triggers" --> n13
+  n15 -- "dead-letters-to" --> n14
+"
+`;

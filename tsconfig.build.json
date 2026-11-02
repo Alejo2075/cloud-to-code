@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/core" },
     { "path": "packages/testing" },
-    { "path": "packages/reconstruction" }
+    { "path": "packages/reconstruction" },
+    { "path": "packages/diagram-mermaid" }
   ]
 }
