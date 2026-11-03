@@ -1,0 +1,40 @@
+{
+  "name": "@cloud-to-code/ai",
+  "version": "0.1.0",
+  "description": "Standalone AI providers and orchestration for Cloud to Code: consent-gated, schema-validated, advisory only.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "directory": "packages/ai"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1161.0",
+    "@aws-sdk/credential-providers": "^3.1161.0",
+    "@cloud-to-code/core": "workspace:*",
+    "@cloud-to-code/reconstruction": "workspace:*",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloud-to-code/testing": "workspace:*"
+  }
+}

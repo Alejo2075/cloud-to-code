@@ -8,6 +8,7 @@
     { "path": "packages/generator-cdk" },
     { "path": "packages/validator" },
     { "path": "packages/provider-aws" },
+    { "path": "packages/ai" },
     { "path": "apps/cli" }
   ]
 }
