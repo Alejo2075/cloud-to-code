@@ -94,6 +94,18 @@ describe('verifyPlan rejects untrusted proposals', () => {
     expect(codes({ ...good, snapshotId: 'snap-other' })).toContain('snapshot-mismatch');
   });
 
+  it('rejects plans that contradict the developer decisions', () => {
+    const p = clone();
+    const bus = p.boundaries.referenced[0]!;
+    p.boundaries.referenced = [];
+    p.boundaries.owned.push(bus);
+    p.constructs = p.constructs
+      .map((c) => ({ ...c, resourceIds: c.resourceIds.filter((r) => r !== bus) }))
+      .filter((c) => c.resourceIds.length > 0);
+    p.stacks[0]!.constructIds = p.constructs.map((c) => c.id);
+    expect(codes(p)).toContain('decision-conflict');
+  });
+
   it('rejects structurally invalid proposals', () => {
     expect(codes({ nonsense: true })).toEqual(['schema-invalid']);
     expect(codes(null)).toEqual(['schema-invalid']);

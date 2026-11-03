@@ -84,6 +84,25 @@ export class WorkspaceStore {
     }
   }
 
+  private snapshotsDir(): string {
+    return join(this.root, 'snapshots');
+  }
+
+  /** Persist a sanitized snapshot so tools can refer to it by ID (`.c2c/snapshots/<id>.json`, 0600). */
+  saveSnapshotFile(snapshot: CloudSnapshot): void {
+    assertSafeId(snapshot.id, 'snapshot ID');
+    this.ensureDir(this.root);
+    this.ensureDir(this.snapshotsDir());
+    this.writeJson(join(this.snapshotsDir(), `${snapshot.id}.json`), snapshot);
+  }
+
+  loadSnapshotFile(id: string): CloudSnapshot {
+    assertSafeId(id, 'snapshot ID');
+    const path = join(this.snapshotsDir(), `${id}.json`);
+    if (!existsSync(path)) throw new WorkspaceError(`Snapshot ${id} not found in ${this.root}`);
+    return parseSnapshot(this.readJson(path)).snapshot;
+  }
+
   hasSession(id: string): boolean {
     return existsSync(join(this.sessionDir(id), 'session.json'));
   }

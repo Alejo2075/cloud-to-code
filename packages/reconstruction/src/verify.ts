@@ -1,10 +1,12 @@
 import {
+  EvidenceGraph,
   ReconstructionPlanSchema,
   redactSecrets,
   type CloudSnapshot,
   type DeveloperDecision,
 } from '@cloud-to-code/core';
-import { SUPPORTED_GENERATION_TYPES } from './supported-types.js';
+import { slug } from './naming.js';
+import { STATEFUL_TYPES, SUPPORTED_GENERATION_TYPES } from './supported-types.js';
 
 export interface PlanIssue {
   severity: 'error' | 'warning';
@@ -172,6 +174,51 @@ export function verifyPlan(plan: unknown, ctx: VerifyContext): PlanIssue[] {
           'unverified-acceptance',
           `Assumption ${a.id} is marked accepted without user-confirmed evidence.`,
         );
+    }
+  }
+
+  // The plan must agree with what the developer decided.
+  const graph = new EvidenceGraph(ctx.snapshot);
+  const app = graph
+    .applicationCandidates()
+    .candidates.find((c) => slug(c.name) === p.applicationId);
+  const choice = (qid: string): string | undefined => {
+    const a = ctx.decisions.find((d) => d.questionId === qid)?.answer;
+    return a?.kind === 'choice' ? a.optionId : undefined;
+  };
+  if (app) {
+    for (const hubId of app.sharedResourceIds) {
+      const hub = graph.resources.get(hubId);
+      const c = hub ? choice(`q-shared-${slug(hub.displayName)}`) : undefined;
+      if (!c) continue;
+      const expected =
+        c === 'reference'
+          ? 'referenced'
+          : c === 'exclude'
+            ? 'excluded'
+            : c === `own-${app.id}`
+              ? 'owned'
+              : 'referenced';
+      if (buckets.get(hubId) !== expected) {
+        err(
+          'decision-conflict',
+          `Shared resource ${hubId} is "${buckets.get(hubId) ?? 'unassigned'}" but the developer decided "${c}" (expected ${expected}).`,
+        );
+      }
+    }
+    const stateful = choice(`q-stateful-${slug(app.name)}`);
+    if (stateful) {
+      for (const id of app.resourceIds) {
+        const type = graph.resources.get(id)?.type;
+        if (!type || !STATEFUL_TYPES.has(type) || !buckets.has(id)) continue;
+        const expected = stateful === 'reference-existing' ? 'referenced' : 'owned';
+        if (buckets.get(id) !== expected) {
+          err(
+            'decision-conflict',
+            `Stateful resource ${id} is "${buckets.get(id)}" but the developer decided "${stateful}".`,
+          );
+        }
+      }
     }
   }
 

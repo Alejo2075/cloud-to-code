@@ -1,10 +1,5 @@
 import { resolve } from 'node:path';
-import {
-  GENERATOR_VERSION,
-  GenerationError,
-  generateProject,
-  writeProject,
-} from '@cloud-to-code/generator-cdk';
+import { GenerationError, generateForSession } from '@cloud-to-code/generator-cdk';
 import { validateProject, adoptionPlan, type ValidationReport } from '@cloud-to-code/validator';
 import { emit, resolveSessionId, type Context } from '../context.js';
 import { CliError, ExitCode } from '../exit-codes.js';
@@ -47,55 +42,64 @@ export async function runGenerate(
   );
   if (result.outcome !== 'OK' || !result.plan) return reportInterview(ctx, sessionId, result);
 
+  let validation: ValidationReport | undefined;
   const svc = ctx.service;
   const output = resolve(ctx.io.cwd, options.output);
-  svc.setState(sessionId, 'GENERATING');
   try {
-    const snapshot = ctx.store.loadSnapshot(sessionId);
-    const decisions = svc.decisions(sessionId).latest;
     const advice = options.ai
-      ? await runAiAdvice(ctx, snapshot, result.plan, decisions, options)
+      ? await runAiAdvice(
+          ctx,
+          ctx.store.loadSnapshot(sessionId),
+          result.plan,
+          svc.currentDecisions(sessionId),
+          options,
+        )
       : undefined;
-    const project = generateProject({
-      snapshot,
-      plan: result.plan,
-      decisions,
-      toolVersion: GENERATOR_VERSION,
-    });
-    if (advice)
-      project.files.push({ path: 'reports/ai-interpretation.md', content: advice.markdown });
-    writeProject(output, project.files, { overwrite: options.overwrite === true });
-    svc.setState(sessionId, 'VALIDATING');
-    const validation = await validateProject(output, { typecheck: false });
-    svc.setState(
+    const generated = await generateForSession({
+      service: svc,
       sessionId,
-      validation.summary === 'failed' ? 'FAILED' : 'COMPLETED',
-      validation.summary === 'failed' ? 'Generated project failed validation' : undefined,
-    );
-    const status = svc.status(sessionId);
-    const exitCode = validation.summary === 'failed' ? ExitCode.FAILED : ExitCode.OK;
+      output,
+      overwrite: options.overwrite === true,
+      extraFiles: advice
+        ? [{ path: 'reports/ai-interpretation.md', content: advice.markdown }]
+        : [],
+      validate: async (dir) => {
+        const report = await validateProject(dir, { typecheck: false });
+        validation = report;
+        return { failed: report.summary === 'failed' };
+      },
+    });
+    if (!generated.ok)
+      return reportInterview(ctx, sessionId, {
+        ...result,
+        outcome: 'FAILED',
+        issues: generated.issues,
+      });
+    const { project, status } = generated;
+    const exitCode = generated.validationFailed ? ExitCode.FAILED : ExitCode.OK;
     emit(
       ctx,
       {
-        status: validation.summary === 'failed' ? 'FAILED' : 'OK',
+        status: generated.validationFailed ? 'FAILED' : 'OK',
         exitCode,
         session: status,
         output,
         files: project.files.map((f) => f.path),
         unresolved: project.unresolved,
-        plan: result.plan,
+        plan: generated.plan,
         validation,
       },
       [
         renderStatus(status),
         '',
-        renderPlanSummary(result.plan),
+        renderPlanSummary(generated.plan),
         '',
         `Generated ${project.files.length} files in ${output}`,
         `Unresolved items needing manual work: ${project.unresolved.length} (see reports/coverage.json)`,
+        ...(advice ? ['', advice.summary] : []),
         '',
         'Local checks (nothing was deployed; no AWS resource was modified):',
-        renderChecks(validation),
+        validation ? renderChecks(validation) : '',
         '',
         'Next: cd into the project, run `npm install`, then `npm test` and `npx cdk synth`.',
         'Synthesis does not prove the template is equivalent to your running infrastructure or safe to import. Read reports/migration-plan.md.',
@@ -103,14 +107,10 @@ export async function runGenerate(
     );
     return exitCode;
   } catch (error) {
-    svc.setState(sessionId, 'FAILED', (error as Error).message);
     if (error instanceof GenerationError) {
-      const exit =
-        error.code === 'output-not-empty' ||
-        error.code === 'unsafe-output' ||
-        error.code === 'unsafe-path'
-          ? ExitCode.USAGE
-          : ExitCode.FAILED;
+      const exit = ['output-not-empty', 'unsafe-output', 'unsafe-path'].includes(error.code)
+        ? ExitCode.USAGE
+        : ExitCode.FAILED;
       throw new CliError(
         error.message,
         exit,

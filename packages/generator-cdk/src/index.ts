@@ -170,3 +170,4 @@ export function generateProject(input: GenerateInput): GeneratedProject {
 }
 
 export type { CloudSnapshot, DeveloperDecision, ReconstructionPlan };
+export * from './session.js';

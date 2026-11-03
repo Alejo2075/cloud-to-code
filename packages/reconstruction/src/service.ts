@@ -313,6 +313,32 @@ export class ReconstructionService {
     }
   }
 
+  /** Latest decisions whose evidence is unchanged (reopened ones must be re-confirmed first). */
+  currentDecisions(sessionId: string): DeveloperDecision[] {
+    return this.questionStates(sessionId)
+      .filter((s) => s.decision !== undefined && s.status !== 'reopened')
+      .map((s) => s.decision!);
+  }
+
+  /**
+   * The plan stored for this session (for example one submitted by an agent host), but only if it still passes
+   * deterministic verification against the current snapshot and decisions. Stale or invalid plans are ignored.
+   */
+  verifiedStoredPlan(sessionId: string): ReconstructionPlan | undefined {
+    const plan = this.store.loadPlan(sessionId);
+    if (!plan) return undefined;
+    if (this.status(sessionId).blocking.length > 0) return undefined;
+    const decisions = this.questionStates(sessionId)
+      .filter((s) => s.decision !== undefined && s.status !== 'reopened')
+      .map((s) => s.decision!);
+    const issues = verifyPlan(plan, {
+      snapshot: this.store.loadSnapshot(sessionId),
+      decisions,
+      blockingUnresolved: [],
+    });
+    return issues.some((i) => i.severity === 'error') ? undefined : plan;
+  }
+
   /**
    * Move the session toward the state implied by the current questions: BLOCKED when a blocking question was
    * answered "I don't know", AWAITING_INPUT while anything is pending, PLANNING when nothing is.
