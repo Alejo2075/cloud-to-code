@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.8.1",
+    "@cloud-to-code/ai": "workspace:*",
     "@cloud-to-code/core": "workspace:*",
     "@cloud-to-code/diagram-mermaid": "workspace:*",
     "@cloud-to-code/generator-cdk": "workspace:*",

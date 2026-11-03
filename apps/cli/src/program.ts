@@ -1,5 +1,6 @@
 import { Command, CommanderError } from 'commander';
 import { createContext, type GlobalOptions } from './context.js';
+import { runAiConnect, runAiPreview, runAiTest } from './commands/ai.js';
 import { runConfigShow, runInit } from './commands/config.js';
 import { runDemo } from './commands/demo.js';
 import { runDiscover } from './commands/discover.js';
@@ -72,6 +73,33 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
       exitCode = runConfigShow(ctx());
     });
 
+  const ai = program
+    .command('ai')
+    .description('Optional AI provider for advisory help (never required)');
+  ai.command('connect')
+    .description('Choose a provider and model (no keys are stored)')
+    .option('--provider <name>', 'bedrock | anthropic | openai | ollama')
+    .option('--model <id>', 'model or inference profile ID (never assumed)')
+    .option('--endpoint <url>', 'Ollama-compatible endpoint')
+    .option('--region <region>', 'Bedrock region')
+    .option('--aws-profile <name>', 'AWS profile for Bedrock')
+    .action((options) => {
+      exitCode = runAiConnect(ctx(), options);
+    });
+  ai.command('test')
+    .description('Check connectivity with a fixed prompt (no inventory data)')
+    .action(async () => {
+      exitCode = await runAiTest(ctx());
+    });
+  ai.command('preview')
+    .description('Show exactly what would be sent to a model; sends nothing')
+    .option('--snapshot <file>', 'snapshot file')
+    .option('--demo', 'use the bundled synthetic example')
+    .option('--show-data', 'print the exact payload')
+    .action((options) => {
+      exitCode = runAiPreview(ctx(), options);
+    });
+
   program
     .command('discover')
     .description(
@@ -118,6 +146,14 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
       '--overwrite',
       'allow --output to replace files in a non-empty directory (never the default)',
     )
+    .option(
+      '--ai',
+      'add advisory AI interpretation (needs a configured provider; see `c2c ai preview`)',
+    )
+    .option(
+      '--allow-external-model',
+      'consent to sending the previewed context to an external model provider',
+    )
     .action(async (application: string | undefined, options) => {
       exitCode = await runReconstruct(ctx(), application, options);
     });
@@ -130,6 +166,14 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
     .requiredOption('--output <dir>', 'directory to write the project into (must be new or empty)')
     .option('--overwrite', 'replace files in a non-empty directory (never the default)')
     .option('--answers <file>', 'answers file (JSON) to apply first')
+    .option(
+      '--ai',
+      'add advisory AI interpretation (needs a configured provider; see `c2c ai preview`)',
+    )
+    .option(
+      '--allow-external-model',
+      'consent to sending the previewed context to an external model provider',
+    )
     .action(async (options) => {
       exitCode = await runGenerate(ctx(), options);
     });

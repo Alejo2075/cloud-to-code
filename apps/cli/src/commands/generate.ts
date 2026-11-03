@@ -9,11 +9,14 @@ import { validateProject, adoptionPlan, type ValidationReport } from '@cloud-to-
 import { emit, resolveSessionId, type Context } from '../context.js';
 import { CliError, ExitCode } from '../exit-codes.js';
 import { renderPlanSummary, renderStatus } from '../render.js';
+import { runAiAdvice } from './ai.js';
 import { reportInterview, runInterview } from './interview.js';
 
 export interface GenerateOptions {
   output?: string;
   overwrite?: boolean;
+  ai?: boolean;
+  allowExternalModel?: boolean;
 }
 
 function renderChecks(report: ValidationReport): string {
@@ -50,12 +53,17 @@ export async function runGenerate(
   try {
     const snapshot = ctx.store.loadSnapshot(sessionId);
     const decisions = svc.decisions(sessionId).latest;
+    const advice = options.ai
+      ? await runAiAdvice(ctx, snapshot, result.plan, decisions, options)
+      : undefined;
     const project = generateProject({
       snapshot,
       plan: result.plan,
       decisions,
       toolVersion: GENERATOR_VERSION,
     });
+    if (advice)
+      project.files.push({ path: 'reports/ai-interpretation.md', content: advice.markdown });
     writeProject(output, project.files, { overwrite: options.overwrite === true });
     svc.setState(sessionId, 'VALIDATING');
     const validation = await validateProject(output, { typecheck: false });

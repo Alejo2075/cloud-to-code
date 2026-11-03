@@ -46,6 +46,9 @@ function scripted(script: Record<string, Answer>): Prompter & { asked: string[] 
       asked.push(q.id);
       return script[q.id];
     },
+    async confirm() {
+      return false;
+    },
     async chooseApplication(names) {
       return names.find((n) => n === 'orders-api');
     },

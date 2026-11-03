@@ -121,6 +121,8 @@ export async function runReconstruct(
     resume?: boolean;
     output?: string;
     overwrite?: boolean;
+    ai?: boolean;
+    allowExternalModel?: boolean;
   },
 ): Promise<number> {
   let sessionId: string;
@@ -172,6 +174,8 @@ export async function runReconstruct(
     return runGenerate(ctx, {
       output: options.output,
       ...(options.overwrite ? { overwrite: true } : {}),
+      ...(options.ai ? { ai: true } : {}),
+      ...(options.allowExternalModel ? { allowExternalModel: true } : {}),
       ...(options.answers ? { answers: options.answers } : {}),
     });
   }

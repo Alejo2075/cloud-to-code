@@ -14,6 +14,7 @@
     { "path": "../../packages/testing" },
     { "path": "../../packages/generator-cdk" },
     { "path": "../../packages/validator" },
-    { "path": "../../packages/provider-aws" }
+    { "path": "../../packages/provider-aws" },
+    { "path": "../../packages/ai" }
   ]
 }

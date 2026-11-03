@@ -44,6 +44,9 @@ importers:
       '@clack/prompts':
         specifier: ^1.8.1
         version: 1.8.1
+      '@cloud-to-code/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@cloud-to-code/core':
         specifier: workspace:*
         version: link:../../packages/core

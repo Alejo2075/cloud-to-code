@@ -68,6 +68,11 @@ export class ClackPrompter implements Prompter {
     return { kind: 'choice', optionId: choice as string };
   }
 
+  async confirm(message: string): Promise<boolean> {
+    const yes = await p.confirm({ message, initialValue: false });
+    return !p.isCancel(yes) && yes;
+  }
+
   async chooseApplication(names: readonly string[]): Promise<string | undefined> {
     const choice = await p.select({
       message: 'Which application do you want to reconstruct?',
