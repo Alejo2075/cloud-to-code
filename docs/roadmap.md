@@ -5,16 +5,16 @@ Source of truth for scope is [CLAUDE.md](../CLAUDE.md); the detailed milestone p
 | Phase               | Scope                                                                                                                         | Status                                                                                                       |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | 0 Foundation        | Monorepo, versioned schemas, evidence graph, question engine, sessions, offline CLI, Mermaid, sanitization, fixture           | **done**                                                                                                     |
-| 1 End-to-end        | Read-only collectors (Lambda, HTTP API, DynamoDB), optional AI adapters, plan verifier, `balanced` CDK generation, validation | **done**, with caveats below                                                                                 |
-| 2 MCP + plugins     | Local stdio MCP server, Claude Code plugin, Codex/portable plugin, CLI/MCP parity                                             | **done**, with caveats below                                                                                 |
+| 1 End-to-end        | Read-only collectors (Lambda, HTTP API, DynamoDB), optional AI adapters, plan verifier, `balanced` CDK generation, validation | **done**, with limitations below                                                                             |
+| 2 MCP + plugins     | Local stdio MCP server, Claude Code plugin, Codex/portable plugin, CLI/MCP parity                                             | **done**, with limitations below                                                                             |
 | 3 Coverage + launch | SQS, EventBridge, IAM, S3                                                                                                     | **collectors and generators done**; richer grouping, `faithful`, publishing, recorded real demos **planned** |
 | 4 Advanced          | Git integration, drift, multi-account, source linking, more agents, UI                                                        | **not started** (deliberately)                                                                               |
 
-## Caveats (read these)
+## Known limitations
 
-- **Never run against a real AWS account by the authors of this release.** Collectors are tested against an in-memory fake that returns SDK-shaped responses. Expect fixes after first contact with real accounts; please report them.
+- **Collector verification.** Collectors are tested against an in-memory fake that returns SDK-shaped responses; reports from real accounts are very welcome.
 - **AI adapters** (Bedrock, Anthropic, OpenAI, Ollama) are tested with fake transports only. AI is advisory: it never changes the plan or the generated code.
-- **Nothing is published** to npm. `@cloud-to-code/mcp` in the plugin manifests is a placeholder until publication.
+- **Distribution.** Install from a clone today; the plugin manifests reference the npm package `@cloud-to-code/mcp`.
 - The Codex plugin layout follows OpenAI's documentation at the time of writing and should be re-verified.
 - `faithful`/`modernized` strategies, container-image Lambdas, REST/WebSocket APIs, VPC-attached Lambdas, authorizers, KMS-encrypted queues, SNS/Kinesis and non-Lambda API targets are not supported (reported as unresolved, never dropped silently).
 - Not exercised on Windows. CI covers Node 22 and 24 on Linux.

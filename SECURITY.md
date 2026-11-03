@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Cloud to Code is pre-1.0. Only the latest released minor version receives security fixes.
+Security fixes are provided for the latest released minor version.
 
 ## Reporting a vulnerability
 

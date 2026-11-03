@@ -1,6 +1,6 @@
 # Quickstart
 
-Requirements: Node.js 22+ and pnpm 9. The packages are not published to npm yet, so run from a clone.
+Requirements: Node.js 22+ and pnpm 9. Install from a clone:
 
 ```bash
 git clone https://github.com/Alejo2075/cloud-to-code && cd cloud-to-code

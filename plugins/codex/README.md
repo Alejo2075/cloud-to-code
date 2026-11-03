@@ -8,7 +8,7 @@ A portable Agent Plugin (`plugin.json`, `mcp.json`, `skills/`) that lets Codex o
 
 ## Install
 
-> `@cloud-to-code/mcp` is not published to npm yet; until then build the repository and change `mcp.json` to `"command": "node", "args": ["<repo>/packages/mcp/dist/bin.js"]`.
+> `mcp.json` launches `npx -y @cloud-to-code/mcp`. To run from a clone instead, build the repository and change it to `"command": "node", "args": ["<repo>/packages/mcp/dist/bin.js"]`.
 
 Use your host's plugin installation flow with this folder. Hosts that only support MCP can use the server directly; see `docs/plugins.md` in the repository.
 

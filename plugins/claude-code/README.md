@@ -8,11 +8,13 @@ Turn a running AWS application into a reviewable AWS CDK (TypeScript) project, w
 
 ## Install
 
-> The npm package `@cloud-to-code/mcp` is not published yet. Until it is, build this repository and point the plugin at the local server (see below).
+> The manifest launches the server with `npx -y @cloud-to-code/mcp`. To run it from a clone of this repository instead, see _Run from a clone_ below.
 
 From a marketplace that lists this plugin: `/plugin install cloud-to-code@<marketplace>`.
 
-For local development (no marketplace needed):
+## Run from a clone
+
+No marketplace needed:
 
 ```bash
 pnpm install && pnpm build          # in the repository root

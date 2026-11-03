@@ -2,7 +2,7 @@
 
 Cloud to Code runs as a **local stdio MCP server** (`@cloud-to-code/mcp`, binary `c2c-mcp`). The host agent supplies the conversation and its own model; the server supplies deterministic evidence, state and validation. It never calls a model, never blocks waiting for a human, and exposes no tool that deploys, imports, deletes, bootstraps or runs shell commands.
 
-> Status: the repository is pre-release. `@cloud-to-code/mcp` is **not yet published to npm**, so the plugin manifests reference `npx -y @cloud-to-code/mcp`; until publication, point them at `node <repo>/packages/mcp/dist/bin.js` after `pnpm build`.
+> Running from a clone: after `pnpm build`, launch the server with `node <repo>/packages/mcp/dist/bin.js --dir <workspace>`. The plugin manifests use `npx -y @cloud-to-code/mcp`, which resolves once the package is installed from npm; from a clone, point `command`/`args` at the local binary.
 
 ## Tools
 
