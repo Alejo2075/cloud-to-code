@@ -1,7 +1,7 @@
 import { readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -23,7 +23,10 @@ export default defineConfig({
       'packages/*/src/**/*.test.ts',
       'apps/*/src/**/*.test.ts',
       'plugins/**/test/**/*.test.ts',
+      'examples/**/test/**/*.test.ts',
     ],
+    // The expected output of the example is a generated project with its own tests; never run it here.
+    exclude: [...configDefaults.exclude, 'examples/**/expected/**', '**/.tmp/**'],
     testTimeout: 30_000,
     hookTimeout: 60_000,
   },

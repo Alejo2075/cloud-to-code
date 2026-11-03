@@ -1,0 +1,759 @@
+{
+  "schemaVersion": "1",
+  "snapshotId": "snap-b993fa33cdb3f726",
+  "planDigest": "8c4c6cfbe2b4f2ac",
+  "strategy": "balanced",
+  "notice": "cdk synth only proves the generated code produces a CloudFormation template. It does not prove the template is equivalent to the running infrastructure, that ownership is correct, or that anything can be safely imported or deployed.",
+  "summary": {
+    "preserved": 95,
+    "approximated": 2,
+    "intentionally-omitted": 13,
+    "unresolved": 0,
+    "not-mapped": 0
+  },
+  "resources": [
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-handler-role",
+      "type": "AWS::IAM::Role",
+      "displayName": "orders-handler-role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersHandlerRole",
+      "evidenceIds": [
+        "ev-13"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "assumeRolePolicy",
+          "status": "preserved"
+        },
+        {
+          "name": "inlinePolicies",
+          "status": "preserved"
+        },
+        {
+          "name": "managedPolicyArns",
+          "status": "preserved"
+        },
+        {
+          "name": "path",
+          "status": "preserved"
+        },
+        {
+          "name": "roleName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new role cannot collide with the existing one."
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-stream-role",
+      "type": "AWS::IAM::Role",
+      "displayName": "orders-stream-role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersStreamRole",
+      "evidenceIds": [
+        "ev-14"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "assumeRolePolicy",
+          "status": "preserved"
+        },
+        {
+          "name": "inlinePolicies",
+          "status": "preserved"
+        },
+        {
+          "name": "managedPolicyArns",
+          "status": "preserved"
+        },
+        {
+          "name": "path",
+          "status": "preserved"
+        },
+        {
+          "name": "roleName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new role cannot collide with the existing one."
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-worker-role",
+      "type": "AWS::IAM::Role",
+      "displayName": "orders-worker-role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersWorkerRole",
+      "evidenceIds": [
+        "ev-15"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "assumeRolePolicy",
+          "status": "preserved"
+        },
+        {
+          "name": "inlinePolicies",
+          "status": "preserved"
+        },
+        {
+          "name": "managedPolicyArns",
+          "status": "preserved"
+        },
+        {
+          "name": "path",
+          "status": "preserved"
+        },
+        {
+          "name": "roleName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new role cannot collide with the existing one."
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::S3::Bucket/orders-exports",
+      "type": "AWS::S3::Bucket",
+      "displayName": "orders-exports",
+      "ownership": "recreate",
+      "construct": "OrdersApiData",
+      "file": "lib/constructs/data.ts",
+      "ruleId": "data/s3-bucket@1",
+      "level": "L2",
+      "logicalId": "OrdersExports",
+      "evidenceIds": [
+        "ev-9"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "bucketName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set: bucket names are global and the existing bucket would collide."
+        },
+        {
+          "name": "encryption",
+          "status": "preserved"
+        },
+        {
+          "name": "notifications",
+          "status": "preserved",
+          "note": "Wired in the compute construct via the CDK bucket-notification custom resource (adds a helper Lambda)."
+        },
+        {
+          "name": "publicAccessBlock",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "versioning",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::ApiGatewayV2::Api/a1b2c3d4e5",
+      "type": "AWS::ApiGatewayV2::Api",
+      "displayName": "orders-api",
+      "ownership": "recreate",
+      "construct": "OrdersApiApi",
+      "file": "lib/constructs/api.ts",
+      "ruleId": "api/http-api@1",
+      "level": "L2",
+      "logicalId": "A1b2c3d4e5",
+      "evidenceIds": [
+        "ev-1"
+      ],
+      "decisionIds": [],
+      "properties": [
+        {
+          "name": "apiEndpoint",
+          "status": "intentionally-omitted",
+          "note": "Endpoint is assigned by AWS; the new API will have a different URL."
+        },
+        {
+          "name": "corsConfiguration",
+          "status": "preserved"
+        },
+        {
+          "name": "integrations",
+          "status": "preserved"
+        },
+        {
+          "name": "name",
+          "status": "preserved"
+        },
+        {
+          "name": "protocolType",
+          "status": "preserved"
+        },
+        {
+          "name": "routes",
+          "status": "preserved"
+        },
+        {
+          "name": "routeSelectionExpression",
+          "status": "intentionally-omitted",
+          "note": "HTTP APIs always use the default route selection expression."
+        },
+        {
+          "name": "stages",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::DynamoDB::Table/orders-table",
+      "type": "AWS::DynamoDB::Table",
+      "displayName": "orders-table",
+      "ownership": "recreate",
+      "construct": "OrdersApiData",
+      "file": "lib/constructs/data.ts",
+      "ruleId": "data/dynamodb-table@1",
+      "level": "L2",
+      "logicalId": "OrdersTable",
+      "evidenceIds": [
+        "ev-6"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "attributeDefinitions",
+          "status": "preserved"
+        },
+        {
+          "name": "billingMode",
+          "status": "preserved"
+        },
+        {
+          "name": "deletionProtectionEnabled",
+          "status": "preserved"
+        },
+        {
+          "name": "globalSecondaryIndexes",
+          "status": "preserved"
+        },
+        {
+          "name": "keySchema",
+          "status": "preserved"
+        },
+        {
+          "name": "latestStreamArn",
+          "status": "intentionally-omitted",
+          "note": "Stream ARNs are regenerated by AWS for the new table."
+        },
+        {
+          "name": "pointInTimeRecoveryEnabled",
+          "status": "preserved"
+        },
+        {
+          "name": "streamSpecification",
+          "status": "preserved"
+        },
+        {
+          "name": "tableName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new table cannot collide with the existing one."
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "timeToLive",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Events::EventBus/shared-events",
+      "type": "AWS::Events::EventBus",
+      "displayName": "shared-events",
+      "ownership": "reference",
+      "construct": "OrdersApiReferences",
+      "file": "lib/constructs/references.ts",
+      "ruleId": "reference/lookup@1",
+      "level": "L2",
+      "logicalId": "SharedEvents",
+      "evidenceIds": [
+        "ev-10"
+      ],
+      "decisionIds": [
+        "dec-efb0fdc5d2"
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "status": "intentionally-omitted",
+          "note": "Referenced, not managed: the existing resource is looked up and left untouched."
+        },
+        {
+          "name": "tags",
+          "status": "intentionally-omitted",
+          "note": "Only AWS-reserved (aws:*) tags were observed; they cannot be set."
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Events::Rule/shared-events/orders-created",
+      "type": "AWS::Events::Rule",
+      "displayName": "orders-created",
+      "ownership": "recreate",
+      "construct": "OrdersApiEvents",
+      "file": "lib/constructs/events.ts",
+      "ruleId": "events/event-rule@1",
+      "level": "L2",
+      "logicalId": "OrdersCreated",
+      "evidenceIds": [
+        "ev-11"
+      ],
+      "decisionIds": [],
+      "properties": [
+        {
+          "name": "eventBusName",
+          "status": "preserved"
+        },
+        {
+          "name": "eventPattern",
+          "status": "preserved"
+        },
+        {
+          "name": "name",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new rule cannot collide with the existing one."
+        },
+        {
+          "name": "state",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "targets",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-handler",
+      "type": "AWS::Lambda::Function",
+      "displayName": "orders-handler",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersHandler",
+      "evidenceIds": [
+        "ev-2"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "architectures",
+          "status": "preserved"
+        },
+        {
+          "name": "description",
+          "status": "preserved"
+        },
+        {
+          "name": "environmentVariableNames",
+          "status": "approximated",
+          "note": "Names kept; values are never collected and come from CloudFormation parameters."
+        },
+        {
+          "name": "ephemeralStorageSize",
+          "status": "preserved"
+        },
+        {
+          "name": "eventSourceMappings",
+          "status": "preserved"
+        },
+        {
+          "name": "handler",
+          "status": "preserved"
+        },
+        {
+          "name": "layers",
+          "status": "preserved"
+        },
+        {
+          "name": "memorySize",
+          "status": "preserved"
+        },
+        {
+          "name": "packageType",
+          "status": "preserved"
+        },
+        {
+          "name": "roleArn",
+          "status": "preserved"
+        },
+        {
+          "name": "runtime",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "timeout",
+          "status": "preserved"
+        },
+        {
+          "name": "tracingMode",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-stream-processor",
+      "type": "AWS::Lambda::Function",
+      "displayName": "orders-stream-processor",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersStreamProcessor",
+      "evidenceIds": [
+        "ev-3"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "architectures",
+          "status": "preserved"
+        },
+        {
+          "name": "description",
+          "status": "preserved"
+        },
+        {
+          "name": "environmentVariableNames",
+          "status": "preserved"
+        },
+        {
+          "name": "ephemeralStorageSize",
+          "status": "preserved"
+        },
+        {
+          "name": "eventSourceMappings",
+          "status": "preserved"
+        },
+        {
+          "name": "handler",
+          "status": "preserved"
+        },
+        {
+          "name": "layers",
+          "status": "preserved"
+        },
+        {
+          "name": "memorySize",
+          "status": "preserved"
+        },
+        {
+          "name": "packageType",
+          "status": "preserved"
+        },
+        {
+          "name": "roleArn",
+          "status": "preserved"
+        },
+        {
+          "name": "runtime",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "timeout",
+          "status": "preserved"
+        },
+        {
+          "name": "tracingMode",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "type": "AWS::Lambda::Function",
+      "displayName": "orders-worker",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersWorker",
+      "evidenceIds": [
+        "ev-4"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ],
+      "properties": [
+        {
+          "name": "architectures",
+          "status": "preserved"
+        },
+        {
+          "name": "description",
+          "status": "preserved"
+        },
+        {
+          "name": "environmentVariableNames",
+          "status": "approximated",
+          "note": "Names kept; values are never collected and come from CloudFormation parameters."
+        },
+        {
+          "name": "ephemeralStorageSize",
+          "status": "preserved"
+        },
+        {
+          "name": "eventSourceMappings",
+          "status": "preserved"
+        },
+        {
+          "name": "handler",
+          "status": "preserved"
+        },
+        {
+          "name": "layers",
+          "status": "preserved"
+        },
+        {
+          "name": "memorySize",
+          "status": "preserved"
+        },
+        {
+          "name": "packageType",
+          "status": "preserved"
+        },
+        {
+          "name": "roleArn",
+          "status": "preserved"
+        },
+        {
+          "name": "runtime",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "timeout",
+          "status": "preserved"
+        },
+        {
+          "name": "tracingMode",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::SQS::Queue/orders-dlq",
+      "type": "AWS::SQS::Queue",
+      "displayName": "orders-dlq",
+      "ownership": "recreate",
+      "construct": "OrdersApiMessaging",
+      "file": "lib/constructs/messaging.ts",
+      "ruleId": "messaging/sqs-queue@1",
+      "level": "L2",
+      "logicalId": "OrdersDlq",
+      "evidenceIds": [
+        "ev-8"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994"
+      ],
+      "properties": [
+        {
+          "name": "delaySeconds",
+          "status": "preserved"
+        },
+        {
+          "name": "fifoQueue",
+          "status": "preserved"
+        },
+        {
+          "name": "maximumMessageSize",
+          "status": "preserved"
+        },
+        {
+          "name": "messageRetentionPeriod",
+          "status": "preserved"
+        },
+        {
+          "name": "queueName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new queue cannot collide with the existing one."
+        },
+        {
+          "name": "receiveMessageWaitTimeSeconds",
+          "status": "preserved"
+        },
+        {
+          "name": "sqsManagedSseEnabled",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "visibilityTimeout",
+          "status": "preserved"
+        }
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::SQS::Queue/orders-queue",
+      "type": "AWS::SQS::Queue",
+      "displayName": "orders-queue",
+      "ownership": "recreate",
+      "construct": "OrdersApiMessaging",
+      "file": "lib/constructs/messaging.ts",
+      "ruleId": "messaging/sqs-queue@1",
+      "level": "L2",
+      "logicalId": "OrdersQueue",
+      "evidenceIds": [
+        "ev-7"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994"
+      ],
+      "properties": [
+        {
+          "name": "delaySeconds",
+          "status": "preserved"
+        },
+        {
+          "name": "fifoQueue",
+          "status": "preserved"
+        },
+        {
+          "name": "maximumMessageSize",
+          "status": "preserved"
+        },
+        {
+          "name": "messageRetentionPeriod",
+          "status": "preserved"
+        },
+        {
+          "name": "queueName",
+          "status": "intentionally-omitted",
+          "note": "Physical name not set so the new queue cannot collide with the existing one."
+        },
+        {
+          "name": "receiveMessageWaitTimeSeconds",
+          "status": "preserved"
+        },
+        {
+          "name": "redrivePolicy",
+          "status": "preserved"
+        },
+        {
+          "name": "sqsManagedSseEnabled",
+          "status": "preserved"
+        },
+        {
+          "name": "tags",
+          "status": "preserved",
+          "note": "aws:* tags are reserved and not set"
+        },
+        {
+          "name": "visibilityTimeout",
+          "status": "preserved"
+        }
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-handler",
+      "property": "code",
+      "reason": "Deployed code packages are never downloaded and cannot reconstruct your repository. Code is taken from deploy-time CloudFormation parameters."
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-handler",
+      "property": "environment",
+      "reason": "Environment variable values are never collected. Names observed: TABLE_NAME. Provide values at deploy time."
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-stream-processor",
+      "property": "code",
+      "reason": "Deployed code packages are never downloaded and cannot reconstruct your repository. Code is taken from deploy-time CloudFormation parameters."
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "property": "code",
+      "reason": "Deployed code packages are never downloaded and cannot reconstruct your repository. Code is taken from deploy-time CloudFormation parameters."
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "property": "environment",
+      "reason": "Environment variable values are never collected. Names observed: QUEUE_URL. Provide values at deploy time."
+    }
+  ]
+}

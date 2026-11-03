@@ -1,0 +1,23 @@
+{
+  "name": "orders-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWS CDK app reconstructed from running infrastructure by Cloud to Code (orders-api). Review before deploying.",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "synth": "cdk synth",
+    "diff": "cdk diff"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.275.0",
+    "constructs": "^10.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "aws-cdk": "^2.1100.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

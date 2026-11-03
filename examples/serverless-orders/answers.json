@@ -1,0 +1,6 @@
+{
+  "q-shared-shared-events": "reference",
+  "q-lambda-source-orders-api": "infra-only",
+  "q-stateful-orders-api": "recreate-retain",
+  "q-possible-access-orders-handler-orders-table": "document-as-possible"
+}
