@@ -299,7 +299,7 @@ export function projectReadme(ctx: GenContext, outputs: readonly ConstructOutput
   const lines = [
     `# ${plan.applicationName} (reconstructed CDK app)`,
     '',
-    '> **Status: generated, not verified for deployment.** Produced by [Cloud to Code](https://github.com/OWNER/cloud-to-code) from read-only AWS discovery. Review every file. No AWS resource was modified to create this project.',
+    '> **Status: generated, not verified for deployment.** Produced by [Cloud to Code](https://github.com/Alejo2075/cloud-to-code) from read-only AWS discovery. Review every file. No AWS resource was modified to create this project.',
     '',
     '## Use',
     '',

@@ -1,6 +1,6 @@
 # Schema, safety allowlists, and consent flows need a second maintainer review.
-/packages/core/src/schemas/          @OWNER
-/packages/provider-aws/src/guard/    @OWNER
-/packages/ai/src/consent/            @OWNER
-/docs/security.md                    @OWNER
-/SECURITY.md                         @OWNER
+/packages/core/src/schemas/          @Alejo2075
+/packages/provider-aws/src/guard/    @Alejo2075
+/packages/ai/src/consent/            @Alejo2075
+/docs/security.md                    @Alejo2075
+/SECURITY.md                         @Alejo2075

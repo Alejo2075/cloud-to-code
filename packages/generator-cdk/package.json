@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "url": "git+https://github.com/Alejo2075/cloud-to-code.git",
     "directory": "packages/generator-cdk"
   },
   "main": "./dist/index.js",

@@ -7,7 +7,7 @@ Cloud to Code is pre-1.0. Only the latest released minor version receives securi
 ## Reporting a vulnerability
 
 **Do not open a public issue.** Report privately through GitHub's
-[private vulnerability reporting](https://github.com/OWNER/cloud-to-code/security/advisories/new).
+[private vulnerability reporting](https://github.com/Alejo2075/cloud-to-code/security/advisories/new).
 Include affected version, impact, and reproduction steps using synthetic data. Never include real credentials.
 
 We aim to acknowledge reports within 5 business days and to share a remediation plan within 30 days.

@@ -1,6 +1,6 @@
 # Cloud to Code
 
-[![CI](https://github.com/OWNER/cloud-to-code/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/cloud-to-code/actions/workflows/ci.yml)
+[![CI](https://github.com/Alejo2075/cloud-to-code/actions/workflows/ci.yml/badge.svg)](https://github.com/Alejo2075/cloud-to-code/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 ![Node 22+](https://img.shields.io/badge/node-22%2B-brightgreen)
 ![Status: alpha](https://img.shields.io/badge/status-alpha-orange)
@@ -27,7 +27,7 @@ Those tools turn a list of resources into a template. Cloud to Code goes further
 ## Try it in two minutes (no AWS, no AI, no network)
 
 ```bash
-git clone https://github.com/OWNER/cloud-to-code && cd cloud-to-code
+git clone https://github.com/Alejo2075/cloud-to-code && cd cloud-to-code
 pnpm install && pnpm build
 alias c2c="node $PWD/apps/cli/dist/bin.js"      # not on npm yet
 

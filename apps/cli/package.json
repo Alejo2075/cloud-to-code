@@ -19,11 +19,11 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/cloud-to-code.git",
+    "url": "git+https://github.com/Alejo2075/cloud-to-code.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://github.com/OWNER/cloud-to-code#readme",
-  "bugs": "https://github.com/OWNER/cloud-to-code/issues",
+  "homepage": "https://github.com/Alejo2075/cloud-to-code#readme",
+  "bugs": "https://github.com/Alejo2075/cloud-to-code/issues",
   "bin": {
     "c2c": "./dist/bin.js"
   },

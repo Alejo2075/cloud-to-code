@@ -3,7 +3,7 @@
 Requirements: Node.js 22+ and pnpm 9. The packages are not published to npm yet, so run from a clone.
 
 ```bash
-git clone https://github.com/OWNER/cloud-to-code && cd cloud-to-code
+git clone https://github.com/Alejo2075/cloud-to-code && cd cloud-to-code
 pnpm install && pnpm build
 alias c2c="node $PWD/apps/cli/dist/bin.js"
 ```

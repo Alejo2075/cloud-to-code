@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Turn running AWS infrastructure into reviewable AWS CDK (TypeScript) with a question-driven, read-only workflow. Local MCP server; no hosted service, no account.",
   "author": { "name": "Cloud to Code contributors" },
-  "homepage": "https://github.com/OWNER/cloud-to-code",
-  "repository": "https://github.com/OWNER/cloud-to-code",
+  "homepage": "https://github.com/Alejo2075/cloud-to-code",
+  "repository": "https://github.com/Alejo2075/cloud-to-code",
   "license": "Apache-2.0",
   "keywords": ["aws", "cdk", "infrastructure-as-code", "reverse-engineering", "mcp"]
 }

@@ -4,7 +4,7 @@ Nothing here is automated on purpose: publishing, tagging and pushing need a mai
 
 ## Before the first push
 
-1. Create the GitHub repository, then replace the `OWNER` placeholder everywhere: `node scripts/set-owner.mjs <your-github-name>` and review `git diff`.
+1. Create the GitHub repository `Alejo2075/cloud-to-code`. The `OWNER` placeholder has already been replaced with `Alejo2075` (`scripts/set-owner.mjs` exists if the owner ever changes).
 2. `pnpm install && pnpm check`. Also run `pnpm build && pnpm examples:generate` and confirm `git status` is clean (the example must match the tools).
 3. Enable on GitHub: Discussions, private vulnerability reporting, secret scanning and push protection, branch protection on `main` (PR required, CI + DCO + Conventional Commits checks, linear history), Dependabot.
 4. Add topics for discovery: `aws`, `aws-cdk`, `cdk`, `infrastructure-as-code`, `iac`, `reverse-engineering`, `cloudformation`, `typescript`, `mcp`, `model-context-protocol`, `claude-code`, `codex`, `serverless`. Add a social preview image.

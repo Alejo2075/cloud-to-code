@@ -111,6 +111,6 @@ describe('skill content', () => {
   });
   it('mentions no credentials, keys or hosted endpoints', () => {
     for (const t of [reconstruct, inspect])
-      expect(t).not.toMatch(/AKIA|sk-ant|https?:\/\/(?!github\.com\/OWNER)/);
+      expect(t).not.toMatch(/AKIA|sk-ant|https?:\/\/(?!github\.com\/Alejo2075)/);
   });
 });
