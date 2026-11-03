@@ -1,5 +1,7 @@
 export default {
   extends: ['@commitlint/config-conventional'],
+  // Dependabot capitalizes its subjects ("Bump x from a to b"); its prefixes are configured in dependabot.yml.
+  ignores: [(message) => /^(build\(deps\)|ci)(\([^)]*\))?: Bump /.test(message)],
   rules: {
     'type-enum': [
       2,
