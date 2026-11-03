@@ -5,18 +5,10 @@
 <p align="center">
   <a href="https://github.com/Alejo2075/cloud-to-code/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Alejo2075/cloud-to-code/ci.yml?branch=main&label=CI&style=flat-square&labelColor=2b2b2b&color=F97316"></a>
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-F97316?style=flat-square&labelColor=2b2b2b"></a>
-  <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-F97316?style=flat-square&labelColor=2b2b2b&logo=typescript&logoColor=white">
   <img alt="Node 22+" src="https://img.shields.io/badge/node-22%2B-F97316?style=flat-square&labelColor=2b2b2b&logo=nodedotjs&logoColor=white">
   <img alt="AWS CDK v2" src="https://img.shields.io/badge/AWS%20CDK-v2-F97316?style=flat-square&labelColor=2b2b2b&logo=amazonaws&logoColor=white">
   <img alt="AWS access: read-only" src="https://img.shields.io/badge/AWS%20access-read--only-F97316?style=flat-square&labelColor=2b2b2b">
-  <img alt="MCP server" src="https://img.shields.io/badge/MCP-local%20server-F97316?style=flat-square&labelColor=2b2b2b">
-  <img alt="Claude Code and Codex plugins" src="https://img.shields.io/badge/plugins-Claude%20Code%20%C2%B7%20Codex-F97316?style=flat-square&labelColor=2b2b2b">
-  <img alt="Tests: 291" src="https://img.shields.io/badge/tests-291%20passing-F97316?style=flat-square&labelColor=2b2b2b">
   <a href="CONTRIBUTING.md"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-F97316?style=flat-square&labelColor=2b2b2b"></a>
-  <a href="https://www.conventionalcommits.org"><img alt="Conventional Commits" src="https://img.shields.io/badge/commits-conventional-F97316?style=flat-square&labelColor=2b2b2b"></a>
-  <a href="https://developercertificate.org/"><img alt="DCO" src="https://img.shields.io/badge/DCO-signed--off-F97316?style=flat-square&labelColor=2b2b2b"></a>
-  <a href="https://github.com/Alejo2075/cloud-to-code/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Alejo2075/cloud-to-code?style=flat-square&labelColor=2b2b2b&color=F97316"></a>
-  <a href="https://github.com/Alejo2075/cloud-to-code/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/Alejo2075/cloud-to-code?style=flat-square&labelColor=2b2b2b&color=F97316"></a>
 </p>
 
 <h3 align="center">Turn running AWS infrastructure into code you can understand, review and own.</h3>
