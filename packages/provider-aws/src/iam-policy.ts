@@ -42,7 +42,7 @@ export const IAM_ACTION_FOR_COMMAND: Readonly<Record<string, string | null>> = {
  */
 export function leastPrivilegePolicy(services?: readonly string[]): {
   Version: string;
-  Statement: { Sid: string; Effect: 'Allow'; Action: string[]; Resource: string }[];
+  Statement: { Sid: string; Effect: 'Allow'; Action: string[]; Resource: string | string[] }[];
 } {
   const wanted = services ? new Set(services) : undefined;
   const actions = new Set<string>();
@@ -53,15 +53,18 @@ export function leastPrivilegePolicy(services?: readonly string[]): {
       if (action) actions.add(action);
     }
   }
-  return {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Sid: 'CloudToCodeReadOnlyDiscovery',
-        Effect: 'Allow',
-        Action: [...actions].sort(),
-        Resource: '*',
-      },
-    ],
-  };
+  const general = [...actions].filter((a) => a !== 'apigateway:GET').sort();
+  const statements: ReturnType<typeof leastPrivilegePolicy>['Statement'] = [
+    { Sid: 'CloudToCodeReadOnlyDiscovery', Effect: 'Allow', Action: general, Resource: '*' },
+  ];
+  if (actions.has('apigateway:GET')) {
+    // apigateway:GET also covers REST API keys; HTTP API discovery only needs the /apis tree.
+    statements.push({
+      Sid: 'CloudToCodeReadHttpApis',
+      Effect: 'Allow',
+      Action: ['apigateway:GET'],
+      Resource: ['arn:aws:apigateway:*::/apis', 'arn:aws:apigateway:*::/apis/*'],
+    });
+  }
+  return { Version: '2012-10-17', Statement: statements };
 }

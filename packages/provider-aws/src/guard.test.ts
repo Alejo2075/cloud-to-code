@@ -87,7 +87,7 @@ describe('least-privilege IAM policy', () => {
   it('maps every allowlisted command to an action (or none for STS) and only to read actions', () => {
     const allowed = Object.values(ALLOWED_COMMANDS).flat();
     expect(Object.keys(IAM_ACTION_FOR_COMMAND).sort()).toEqual([...allowed].sort());
-    const actions = leastPrivilegePolicy().Statement[0]!.Action;
+    const actions = leastPrivilegePolicy().Statement.flatMap((st) => st.Action);
     for (const a of actions) {
       expect(a, a).toMatch(/^(apigateway:GET|[a-z0-9]+:(Get|List|Describe)\w+)$/);
     }
@@ -96,7 +96,32 @@ describe('least-privilege IAM policy', () => {
   });
 
   it('narrows to the requested services', () => {
-    const actions = leastPrivilegePolicy(['sqs']).Statement[0]!.Action;
+    const policy = leastPrivilegePolicy(['sqs']);
+    expect(policy.Statement).toHaveLength(1);
+    const actions = policy.Statement[0]!.Action;
     expect(actions).toEqual(['sqs:GetQueueAttributes', 'sqs:ListQueueTags', 'sqs:ListQueues']);
+  });
+});
+
+describe('published policy file', () => {
+  it('docs/security.md lists every action of the generated policy', () => {
+    const doc = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'docs', 'security.md'),
+      'utf8',
+    );
+    for (const action of leastPrivilegePolicy().Statement.flatMap((st) => st.Action))
+      expect(doc, action).toContain(`"${action}"`);
+  });
+
+  it('docs/least-privilege-policy.json is exactly what the allowlist implies', () => {
+    const file = join(
+      dirname(fileURLToPath(import.meta.url)),
+      '..',
+      '..',
+      '..',
+      'docs',
+      'least-privilege-policy.json',
+    );
+    expect(JSON.parse(readFileSync(file, 'utf8'))).toEqual(leastPrivilegePolicy());
   });
 });
