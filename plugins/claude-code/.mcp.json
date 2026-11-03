@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "cloud-to-code": {
+      "command": "npx",
+      "args": ["-y", "@cloud-to-code/mcp"],
+      "env": { "C2C_WORKSPACE": "${CLAUDE_PROJECT_DIR}" }
+    }
+  }
+}

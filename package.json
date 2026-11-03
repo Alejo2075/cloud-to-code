@@ -10,6 +10,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "plugins:sync": "node scripts/sync-plugin-skills.mjs",
     "build": "tsc -b tsconfig.build.json",
     "typecheck": "pnpm build && pnpm -r typecheck",
     "lint": "eslint .",
