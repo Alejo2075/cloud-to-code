@@ -1,0 +1,310 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "@cloud-to-code/generator-cdk",
+    "version": "0.1.0"
+  },
+  "snapshotId": "snap-b993fa33cdb3f726",
+  "planDigest": "8c4c6cfbe2b4f2ac",
+  "application": "orders-api",
+  "strategy": "balanced",
+  "producedBy": "deterministic-planner",
+  "decisionIds": [
+    "dec-29f04c546e",
+    "dec-a6f5a68994",
+    "dec-edfc05776f",
+    "dec-efb0fdc5d2"
+  ],
+  "resources": [
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-handler-role",
+      "type": "AWS::IAM::Role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersHandlerRole",
+      "evidenceIds": [
+        "ev-13"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-stream-role",
+      "type": "AWS::IAM::Role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersStreamRole",
+      "evidenceIds": [
+        "ev-14"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::IAM::Role/orders-worker-role",
+      "type": "AWS::IAM::Role",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/iam-role@1",
+      "level": "L2",
+      "logicalId": "OrdersWorkerRole",
+      "evidenceIds": [
+        "ev-15"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/global/AWS::S3::Bucket/orders-exports",
+      "type": "AWS::S3::Bucket",
+      "ownership": "recreate",
+      "construct": "OrdersApiData",
+      "file": "lib/constructs/data.ts",
+      "ruleId": "data/s3-bucket@1",
+      "level": "L2",
+      "logicalId": "OrdersExports",
+      "evidenceIds": [
+        "ev-9"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::ApiGatewayV2::Api/a1b2c3d4e5",
+      "type": "AWS::ApiGatewayV2::Api",
+      "ownership": "recreate",
+      "construct": "OrdersApiApi",
+      "file": "lib/constructs/api.ts",
+      "ruleId": "api/http-api@1",
+      "level": "L2",
+      "logicalId": "A1b2c3d4e5",
+      "evidenceIds": [
+        "ev-1"
+      ],
+      "decisionIds": []
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::DynamoDB::Table/orders-table",
+      "type": "AWS::DynamoDB::Table",
+      "ownership": "recreate",
+      "construct": "OrdersApiData",
+      "file": "lib/constructs/data.ts",
+      "ruleId": "data/dynamodb-table@1",
+      "level": "L2",
+      "logicalId": "OrdersTable",
+      "evidenceIds": [
+        "ev-6"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Events::EventBus/shared-events",
+      "type": "AWS::Events::EventBus",
+      "ownership": "reference",
+      "construct": "OrdersApiReferences",
+      "file": "lib/constructs/references.ts",
+      "ruleId": "reference/lookup@1",
+      "level": "L2",
+      "logicalId": "SharedEvents",
+      "evidenceIds": [
+        "ev-10"
+      ],
+      "decisionIds": [
+        "dec-efb0fdc5d2"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Events::Rule/shared-events/orders-created",
+      "type": "AWS::Events::Rule",
+      "ownership": "recreate",
+      "construct": "OrdersApiEvents",
+      "file": "lib/constructs/events.ts",
+      "ruleId": "events/event-rule@1",
+      "level": "L2",
+      "logicalId": "OrdersCreated",
+      "evidenceIds": [
+        "ev-11"
+      ],
+      "decisionIds": []
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-handler",
+      "type": "AWS::Lambda::Function",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersHandler",
+      "evidenceIds": [
+        "ev-2"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-stream-processor",
+      "type": "AWS::Lambda::Function",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersStreamProcessor",
+      "evidenceIds": [
+        "ev-3"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::Lambda::Function/orders-worker",
+      "type": "AWS::Lambda::Function",
+      "ownership": "recreate",
+      "construct": "OrdersApiCompute",
+      "file": "lib/constructs/compute.ts",
+      "ruleId": "compute/lambda-function@1",
+      "level": "L2",
+      "logicalId": "OrdersWorker",
+      "evidenceIds": [
+        "ev-4"
+      ],
+      "decisionIds": [
+        "dec-29f04c546e",
+        "dec-edfc05776f"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::SQS::Queue/orders-dlq",
+      "type": "AWS::SQS::Queue",
+      "ownership": "recreate",
+      "construct": "OrdersApiMessaging",
+      "file": "lib/constructs/messaging.ts",
+      "ruleId": "messaging/sqs-queue@1",
+      "level": "L2",
+      "logicalId": "OrdersDlq",
+      "evidenceIds": [
+        "ev-8"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994"
+      ]
+    },
+    {
+      "resourceId": "123456789012/us-east-1/AWS::SQS::Queue/orders-queue",
+      "type": "AWS::SQS::Queue",
+      "ownership": "recreate",
+      "construct": "OrdersApiMessaging",
+      "file": "lib/constructs/messaging.ts",
+      "ruleId": "messaging/sqs-queue@1",
+      "level": "L2",
+      "logicalId": "OrdersQueue",
+      "evidenceIds": [
+        "ev-7"
+      ],
+      "decisionIds": [
+        "dec-a6f5a68994"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "2dc931cac3436c4248bbc6547413741a91f62a3169d6b186ee74ea19d30cc27f"
+    },
+    {
+      "path": "bin/app.ts",
+      "sha256": "a1eb03220a1e6a2b876d007ed3307b31d7901f47fcbc7bd62bde4f9ce899deb2"
+    },
+    {
+      "path": "cdk.json",
+      "sha256": "cd9ddac666d1d02a5aa61620c1f4a7911ba8df818fb2252621f58a9fa5c02ac8"
+    },
+    {
+      "path": "lib/constructs/api.ts",
+      "sha256": "f992dbace5d21b5765cc49559b055b6e64b29e03aa5bae76fb0c39414356e0ac"
+    },
+    {
+      "path": "lib/constructs/compute.ts",
+      "sha256": "2a2aa44f7d73df477c148a7ba47b6657f89946def4ccceabcf9ce8bda5f46018"
+    },
+    {
+      "path": "lib/constructs/data.ts",
+      "sha256": "268bd03ab601ab0f59d631944d8651db75b320d307d8a72a97300973139a30d6"
+    },
+    {
+      "path": "lib/constructs/events.ts",
+      "sha256": "d094d5b1d272f50932e266af0039ea4da252a1e57bf5b9d882e5ce4ac4a75652"
+    },
+    {
+      "path": "lib/constructs/messaging.ts",
+      "sha256": "677ba672b40209a92b5a243fb56c44c392792e4c7608fac7d018e9db0739ff17"
+    },
+    {
+      "path": "lib/constructs/references.ts",
+      "sha256": "45eed33c65932d424c1eeecd949a1b7b1a53aad6c856542f5f7bbe36d1f28f57"
+    },
+    {
+      "path": "lib/stacks/orders-api-stack.ts",
+      "sha256": "bc6c9c53c0ead82068f61640be203494232fd5949aed050dfb08e02e4f4c337a"
+    },
+    {
+      "path": "package.json",
+      "sha256": "45e622ec526afbe64a5cd40334194adbfce0eda2b4544e9e87d63ecb6b304ad8"
+    },
+    {
+      "path": "README.md",
+      "sha256": "a760755c938852cb25cb09ef674ba3ee671fd567cb0493d5ab1e11f75deb108c"
+    },
+    {
+      "path": "reports/architecture.md",
+      "sha256": "23f4e09481b4ca0c6a5ed56017c90e7ea351c3d27d04654070dec153405d2247"
+    },
+    {
+      "path": "reports/coverage.json",
+      "sha256": "6e74eabac1fe63bc4c5e297e3e456c9816dd81263359721e64827506b452e2bc"
+    },
+    {
+      "path": "reports/migration-plan.md",
+      "sha256": "2d1ae9a0d4624deecca4d17acab904f1cc62ed1cfbe19bfb746d806ddf237ddb"
+    },
+    {
+      "path": "reports/reconstruction-decisions.md",
+      "sha256": "dee5d90fcc32f916cc9fc25180800b14d3cfec7a5025a93bae587fa2c1761071"
+    },
+    {
+      "path": "src/README.md",
+      "sha256": "0be2b888b394c9ee6e2c0541fae05a54ce2ad553e216772c479a3f252d89a3e0"
+    },
+    {
+      "path": "test/infrastructure.test.ts",
+      "sha256": "8747141b9efd7f7226398eceebb29f3f4d9a16b5a3c364bb0854677ba8c8f50e"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "ac756238c79a3a0e4e3e84c8b77bad119eb72cb2c637944956de2f87a8845808"
+    }
+  ]
+}

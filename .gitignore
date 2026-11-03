@@ -12,5 +12,7 @@ coverage/
 
 # Local Cloud to Code workspaces and generated output must never be committed
 .c2c/
+# ...except the provenance manifest inside the committed example output
+!examples/**/.c2c/
 /out/
 .tmp/
