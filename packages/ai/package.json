@@ -36,5 +36,8 @@
   },
   "devDependencies": {
     "@cloud-to-code/testing": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

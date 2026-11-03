@@ -29,5 +29,8 @@
   },
   "dependencies": {
     "@cloud-to-code/core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
