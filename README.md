@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Cloud to Code" width="560">
+  <img src="docs/assets/logo.png" alt="Cloud to Code" width="800">
 </p>
 
 <p align="center">
