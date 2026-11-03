@@ -1,4 +1,6 @@
-# Cloud to Code
+<p align="center">
+  <img src="docs/assets/logo.png" alt="CloudtoCode" width="560">
+</p>
 
 [![CI](https://github.com/Alejo2075/cloud-to-code/actions/workflows/ci.yml/badge.svg)](https://github.com/Alejo2075/cloud-to-code/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
