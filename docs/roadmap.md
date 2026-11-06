@@ -1,6 +1,6 @@
 # Roadmap and status
 
-Source of truth for scope is [CLAUDE.md](../CLAUDE.md); the detailed milestone plan is [development-plan.md](development-plan.md). This table says what is **actually built and tested** versus planned.
+Source of truth for scope is [CLAUDE.md](../CLAUDE.md); this table says what is **actually built and tested** versus planned.
 
 | Phase               | Scope                                                                                                                         | Status                                                                                                       |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
