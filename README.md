@@ -225,7 +225,7 @@ The up-to-date list lives in [docs/roadmap.md](docs/roadmap.md).
 
 ## Contributing
 
-Contributions are welcome. New service collectors, relationship resolvers, fixtures and CDK mapping rules are small, well-bounded pieces with a test pattern to copy; see [good first issues](docs/good-first-issues.md).
+Contributions are welcome. New service collectors, relationship resolvers, fixtures and CDK mapping rules are small, well-bounded pieces with a test pattern to copy; see the issues labelled [good first issue](https://github.com/Alejo2075/cloud-to-code/labels/good%20first%20issue).
 
 ```bash
 pnpm install && pnpm check      # lint + typecheck + tests; no AWS account or AI key needed
