@@ -13,7 +13,7 @@ export function runDemo(ctx: Context): number {
     renderInspection(report),
     '',
     'Next steps:',
-    '  c2c inspect --demo --diagram                 # Mermaid diagram',
+    '  c2c inspect --demo --format mermaid          # Mermaid diagram',
     '  c2c reconstruct orders-api --demo            # answer the questions, build a plan',
     '  c2c reconstruct orders-api --demo --non-interactive --json   # see NEEDS_INPUT as JSON',
   ].join('\n');

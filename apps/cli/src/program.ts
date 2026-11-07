@@ -121,7 +121,7 @@ export async function main(argv: readonly string[], io: CliIo): Promise<number> 
     .description('Show topology, evidence, uncertainty and open questions for a snapshot')
     .option('--snapshot <file>', 'sanitized snapshot JSON file')
     .option('--demo', 'use the bundled synthetic example')
-    .option('--diagram', 'print a Mermaid diagram generated from the evidence graph')
+    .option('--format <type>', 'output diagram format (mermaid or dot)')
     .action((application: string | undefined, options) => {
       exitCode = runInspect(ctx(), application, options);
     });

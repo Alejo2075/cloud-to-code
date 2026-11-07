@@ -77,8 +77,8 @@ describe('demo and inspect (offline)', () => {
     expect(r.stdout).toContain('never collected');
   });
 
-  it('inspect --diagram prints a Mermaid flowchart', async () => {
-    const r = await run(['inspect', '--demo', '--diagram']);
+  it('inspect --format mermaid prints a Mermaid flowchart', async () => {
+    const r = await run(['inspect', '--demo', '--format', 'mermaid']);
     expect(r.stdout.startsWith('flowchart LR')).toBe(true);
   });
 
