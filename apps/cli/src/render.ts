@@ -6,6 +6,14 @@ import type {
 } from '@cloud-to-code/core';
 import type { InspectionReport, SessionStatus } from '@cloud-to-code/reconstruction';
 
+const useColor = typeof process !== 'undefined' && !process.env.NO_COLOR && process.stdout?.isTTY;
+
+const colors = {
+  green: (s: string) => (useColor ? `\x1b[32m${s}\x1b[0m` : s),
+  yellow: (s: string) => (useColor ? `\x1b[33m${s}\x1b[0m` : s),
+  red: (s: string) => (useColor ? `\x1b[31m${s}\x1b[0m` : s),
+};
+
 function indent(text: string, n = 2): string {
   const pad = ' '.repeat(n);
   return text
@@ -51,12 +59,18 @@ export function renderInspection(report: InspectionReport): string {
   const byConfidence = { confirmed: 0, derived: 0, hypothesis: 0 };
   for (const r of report.relationships) byConfidence[r.confidence]++;
   lines.push('');
-  lines.push(
-    `Relationships: ${byConfidence.confirmed} confirmed, ${byConfidence.derived} derived, ${byConfidence.hypothesis} hypotheses`,
-  );
+
+  const confText = colors.green(`${byConfidence.confirmed} confirmed`);
+  const derText = colors.yellow(`${byConfidence.derived} derived`);
+  const hypText = colors.red(`${byConfidence.hypothesis} hypotheses`);
+  lines.push(`Relationships: ${confText}, ${derText}, ${hypText}`);
+
+  // Print only the hypotheses (as requested by maintainer), but color them red
   for (const r of report.relationships.filter((x) => x.confidence === 'hypothesis')) {
     lines.push(
-      `  ? ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}  (permission only, not proof of use)`,
+      colors.red(
+        `  ? ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}  (permission only, not proof of use)`,
+      ),
     );
   }
   if (report.unresolvedEndpoints.length > 0) {
