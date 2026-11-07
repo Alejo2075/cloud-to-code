@@ -9,9 +9,9 @@ import type { InspectionReport, SessionStatus } from '@cloud-to-code/reconstruct
 const useColor = typeof process !== 'undefined' && !process.env.NO_COLOR && process.stdout?.isTTY;
 
 const colors = {
-  green: (s: string) => useColor ? `\x1b[32m${s}\x1b[0m` : s,
-  yellow: (s: string) => useColor ? `\x1b[33m${s}\x1b[0m` : s,
-  red: (s: string) => useColor ? `\x1b[31m${s}\x1b[0m` : s,
+  green: (s: string) => (useColor ? `\x1b[32m${s}\x1b[0m` : s),
+  yellow: (s: string) => (useColor ? `\x1b[33m${s}\x1b[0m` : s),
+  red: (s: string) => (useColor ? `\x1b[31m${s}\x1b[0m` : s),
 };
 
 function indent(text: string, n = 2): string {
@@ -56,23 +56,22 @@ export function renderInspection(report: InspectionReport): string {
       `Unattached shared-type resources: ${report.unassignedHubs.map(shortName).join(', ')}`,
     );
   }
-const byConfidence = { confirmed: 0, derived: 0, hypothesis: 0 };
+  const byConfidence = { confirmed: 0, derived: 0, hypothesis: 0 };
   for (const r of report.relationships) byConfidence[r.confidence]++;
   lines.push('');
-  
+
   const confText = colors.green(`${byConfidence.confirmed} confirmed`);
   const derText = colors.yellow(`${byConfidence.derived} derived`);
   const hypText = colors.red(`${byConfidence.hypothesis} hypotheses`);
   lines.push(`Relationships: ${confText}, ${derText}, ${hypText}`);
 
-  for (const r of report.relationships) {
-    if (r.confidence === 'hypothesis') {
-      lines.push(colors.red(`  ? ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}  (permission only, not proof of use)`));
-    } else if (r.confidence === 'derived') {
-      lines.push(colors.yellow(`  ~ ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}`));
-    } else {
-      lines.push(colors.green(`  + ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}`));
-    }
+  // Print only the hypotheses (as requested by maintainer), but color them red
+  for (const r of report.relationships.filter((x) => x.confidence === 'hypothesis')) {
+    lines.push(
+      colors.red(
+        `  ? ${shortName(r.from)} --${r.kind}--> ${shortName(r.to)}  (permission only, not proof of use)`,
+      ),
+    );
   }
   if (report.unresolvedEndpoints.length > 0) {
     lines.push('');

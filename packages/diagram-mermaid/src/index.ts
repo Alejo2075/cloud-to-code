@@ -92,8 +92,6 @@ export function renderMermaid(snapshot: CloudSnapshot, options: DiagramOptions =
   return `${lines.join('\n')}\n`;
 }
 
-
-
 // --- GRAPHVIZ DOT FORMAT ADDITION ---
 
 /** Escape text for Graphviz DOT label. Requires escaping double quotes. */
@@ -101,6 +99,7 @@ export function escapeDotLabel(text: string): string {
   const cleaned = text
     // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
     .trim();
   return cleaned.length > 60 ? `${cleaned.slice(0, 57)}...` : cleaned;
@@ -172,7 +171,7 @@ export function renderDot(snapshot: CloudSnapshot, options: DiagramOptions = {})
     if (rel.confidence === 'hypothesis' && !includePossible) continue;
     const from = ids.get(rel.from);
     const to = ids.get(rel.to);
-    if (!from || !to) continue; 
+    if (!from || !to) continue;
     lines.push(`  ${dotEdgeLine(from, to, rel)}`);
   }
   lines.push('}');
