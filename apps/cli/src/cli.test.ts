@@ -1,13 +1,14 @@
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Answer, ReconstructionQuestion } from '@cloud-to-code/core';
 import {
   CANARY_SECRETS,
   buildHostileOrdersSnapshot,
   buildServerlessOrdersSnapshot,
 } from '@cloud-to-code/testing';
+import { inspectSnapshot } from '@cloud-to-code/reconstruction';
 import { ExitCode, main, type Prompter } from './index.js';
 
 let dir: string;
@@ -66,6 +67,38 @@ describe('demo and inspect (offline)', () => {
       'orders-api',
     ]);
     expect(r.stdout.trim().startsWith('{')).toBe(true);
+  });
+
+  describe('inspection colors', () => {
+    async function renderInspectionWithTerminal(tty: boolean, noColor: boolean): Promise<string> {
+      const originalTTY = process.stdout.isTTY;
+      const originalNoColor = process.env.NO_COLOR;
+      Object.defineProperty(process.stdout, 'isTTY', { configurable: true, value: tty });
+      if (noColor) process.env.NO_COLOR = '1';
+      else delete process.env.NO_COLOR;
+      vi.resetModules();
+      const { renderInspection } = await import('./render.js');
+      const output = renderInspection(inspectSnapshot(buildServerlessOrdersSnapshot()));
+      Object.defineProperty(process.stdout, 'isTTY', { configurable: true, value: originalTTY });
+      if (originalNoColor === undefined) delete process.env.NO_COLOR;
+      else process.env.NO_COLOR = originalNoColor;
+      return output;
+    }
+
+    it('uses ANSI colors in a TTY without NO_COLOR', async () => {
+      const output = await renderInspectionWithTerminal(true, false);
+      expect(output).toContain('\x1b[32m');
+    });
+
+    it('does not use ANSI colors when NO_COLOR is set', async () => {
+      const output = await renderInspectionWithTerminal(true, true);
+      expect(output).not.toContain('\x1b[');
+    });
+
+    it('does not use ANSI colors outside a TTY', async () => {
+      const output = await renderInspectionWithTerminal(false, false);
+      expect(output).not.toContain('\x1b[');
+    });
   });
 
   it('inspect --demo explains uncertainty and limitations', async () => {
