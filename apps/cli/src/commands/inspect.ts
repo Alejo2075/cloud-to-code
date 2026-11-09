@@ -1,11 +1,11 @@
-import { renderMermaid } from '@cloud-to-code/diagram-mermaid';
+import { renderDot, renderMermaid } from '@cloud-to-code/diagram-mermaid';
 import { inspectSnapshot, applicationIdFor } from '@cloud-to-code/reconstruction';
 import { emit, note, resolveSnapshot, type Context, type SourceOptions } from '../context.js';
 import { CliError, ExitCode } from '../exit-codes.js';
 import { renderInspection } from '../render.js';
 
 export interface InspectOptions extends SourceOptions {
-  diagram?: boolean;
+  format?: string;
 }
 
 export function runInspect(
@@ -13,6 +13,13 @@ export function runInspect(
   application: string | undefined,
   options: InspectOptions,
 ): number {
+  if (options.format && options.format !== 'mermaid' && options.format !== 'dot') {
+    throw new CliError(
+      `Invalid diagram format "${options.format}". Expected "mermaid" or "dot".`,
+      ExitCode.USAGE,
+      'invalid-format',
+    );
+  }
   const loaded = resolveSnapshot(ctx, options);
   note(ctx, `Source: ${loaded.origin}`);
   for (const w of loaded.warnings) note(ctx, `warning: ${w}`);
@@ -36,7 +43,12 @@ export function runInspect(
     report.shared = report.shared.filter((s) => candidate.sharedResourceIds.includes(s.resourceId));
   }
 
-  const diagram = options.diagram ? renderMermaid(loaded.snapshot) : undefined;
+  const diagram =
+    options.format === 'mermaid'
+      ? renderMermaid(loaded.snapshot)
+      : options.format === 'dot'
+        ? renderDot(loaded.snapshot)
+        : undefined;
   if (diagram && !ctx.json) {
     ctx.io.stdout(diagram);
     return ExitCode.OK;

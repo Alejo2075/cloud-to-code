@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildHostileOrdersSnapshot, buildServerlessOrdersSnapshot } from '@cloud-to-code/testing';
-import { escapeLabel, renderMermaid } from './index.js';
+import { escapeLabel, renderDot, renderMermaid } from './index.js';
 
 const snapshot = buildServerlessOrdersSnapshot();
 
@@ -37,6 +37,27 @@ describe('renderMermaid', () => {
   });
 });
 
+describe('renderDot', () => {
+  const out = renderDot(snapshot);
+
+  it('is deterministic and independent of input order', () => {
+    const reversed = {
+      ...snapshot,
+      resources: [...snapshot.resources].reverse(),
+      relationships: [...snapshot.relationships].reverse(),
+    };
+    expect(renderDot(reversed)).toBe(out);
+  });
+
+  it('distinguishes confirmed edges from derived and hypothesis edges', () => {
+    expect(out).toMatch(/-> .* \[label="routes-to"\];/);
+    expect(out).toMatch(/-> .* \[label="possible-access \(hypothesis\)", style="dashed"\];/);
+    expect(renderDot(snapshot, { includeSameStack: true })).toMatch(
+      /-> .* \[label="same-stack", style="dashed"\];/,
+    );
+  });
+});
+
 describe('untrusted labels', () => {
   it('escapes Mermaid syntax and control characters', () => {
     expect(escapeLabel('a"b<c>|d[e]{f}`g`\n')).toBe(
@@ -50,5 +71,19 @@ describe('untrusted labels', () => {
     expect(out2).not.toContain('</untrusted>');
     expect(out2).not.toMatch(/<(?!br\/>)/);
     expect(out2).not.toContain('Ignore all previous');
+  });
+
+  it('escapes backslashes and double-quotes in hostile DOT labels', () => {
+    const hostile = buildHostileOrdersSnapshot();
+    const withDotHostile = {
+      ...hostile,
+      resources: hostile.resources.map((resource) =>
+        resource.physicalId === 'orders-table'
+          ? { ...resource, displayName: `${resource.displayName} \\ "quoted"` }
+          : resource,
+      ),
+    };
+    const out2 = renderDot(withDotHostile);
+    expect(out2).toContain('\\\\ \\"quoted');
   });
 });
