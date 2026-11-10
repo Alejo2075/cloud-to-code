@@ -55,7 +55,7 @@
     "@cloud-to-code/reconstruction": "workspace:*",
     "@cloud-to-code/testing": "workspace:*",
     "@cloud-to-code/validator": "workspace:*",
-    "commander": "^15.0.0",
+    "commander": "^15.1.0",
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
